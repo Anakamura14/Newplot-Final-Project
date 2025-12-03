@@ -1,0 +1,27 @@
+Package: newplot
+Type: Package
+Title: An Enhanced Version Of Ggplot With Custom Preferences
+Version: 0.1.0
+Authors@R: c(
+    person(
+      "Asuka", "Elms",
+      email = "anakamu@iu.edu",
+      role = c("aut", "cre")
+    )
+  )
+Description: The primary goal of this project will be to create a custom graphing
+    function, new_plot(), that builds on ggplot2() by automatically applying my 
+    preferred defaults for themes, colors, and labels. 
+License: GPL-3
+Encoding: UTF-8
+Imports:
+    ggplot2,
+    dplyr,
+    rlang,
+    glue,
+    viridisLite
+Suggests:
+    shiny,
+    miniUI
+LazyData: true
+RoxygenNote: 7.3.3
