@@ -1,13 +1,17 @@
 ---
 title: "Newplot Vignette"
-author: "Asuka Elms"
-date: "December 15, 2025"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Newplot Vignette}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+[![R-CMD-check](https://github.com/Anakamura14/Newplot-Final-Project/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Anakamura14/Newplot-Final-Project/actions/workflows/R-CMD-check.yaml)
 
 # Newplot
 
