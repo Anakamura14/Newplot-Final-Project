@@ -1,5 +1,5 @@
-library(shiny)
-library(miniUI)
+# NOTE: Do NOT use library(shiny) or library(miniUI)
+# All shiny/miniUI functions must be called with shiny:: or miniUI::
 
 #' Title
 #'
@@ -142,4 +142,3 @@ new_plot_gadget <- function(data) {
     viewer = shiny::dialogViewer("new_plot Gadget", width = 1000, height = 800)
   )
 }
-
