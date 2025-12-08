@@ -1,6 +1,6 @@
 Package: newplot
 Type: Package
-Title: An Enhanced Version Of Ggplot With Custom Preferences
+Title: Newplot: An Enhanced Version Of Ggplot With Custom Preferences
 Version: 0.1.0
 Authors@R: c(
     person(
@@ -22,6 +22,9 @@ Imports:
     viridisLite
 Suggests:
     shiny,
-    miniUI
+    miniUI,
+    knitr,
+    rmarkdown
 LazyData: true
 RoxygenNote: 7.3.3
+VignetteBuilder: knitr

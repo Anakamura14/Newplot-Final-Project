@@ -1,0 +1,189 @@
+---
+title: "Newplot Vignette"
+author: "Asuka Elms"
+date: "December 15, 2025"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Newplot Vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Newplot
+
+Newplot: A Pipe-Friendly Plotting Wrapper with an Interactive Shiny Gadget
+
+Newplot is an R package that simplifies generating high-quality, publication-ready visualizations using a pipe-friendly interface. Built on top of ggplot2, the package offers:
+
+(1) new_plot() — a customizable, tidy-evaluation–aware function
+(2) new_plot_gadget() — an interactive Shiny gadget for building plots visually
+
+The goal of this package is to streamline data visualization, reduce repetitive ggplot2 code, and provide a tool that is both easy for beginners and flexible for experienced users.
+
+## Installation
+
+You can install the development version of newplot like so:
+
+```{r}
+devtools::install()
+library(newplot)
+```
+
+## Overview
+
+The newplot package was created to make ggplot2 more approachable and efficient by reducing the repetitive code and conceptual overhead that often challenge new and intermediate R users. While ggplot2 is an extraordinarily powerful system, its syntax can feel heavy—especially when dealing with tidy evaluation, aesthetic mappings, grouping variables, color scales, or the distinction between quoted and unquoted column names. The aim of this package is to preserve the full expressive power of ggplot2 while offering a cleaner, more intuitive interface that works smoothly in pipelines and accommodates a wide range of user skill levels.
+
+## Intended Users
+
+The newplot package was developed with approachability in mind and is especially well suited for users who appreciate the flexibility of ggplot2 but prefer a more intuitive and less verbose interface. It is particularly helpful for beginners who are still learning tidy evaluation, aesthetic mappings, grouping behavior, or the nuances of quoted versus unquoted inputs. Students in data analysis, public health, and social science courses can use the package to generate clear, meaningful visualizations without getting lost in boilerplate code.
+
+More experienced analysts may also find value in the streamlined syntax, especially when working within piped workflows where readability and speed matter. Educators benefit from having a tool that lowers the entry barrier for learners while still producing high-quality plots consistent with ggplot2 conventions. Finally, users who rely on interactive exploration—such as Shiny developers—gain an accessible graphical interface through the included gadget, which allows rapid prototyping and automatic code generation. Together, these features make newplot a practical and user-friendly option for a wide audience.
+
+## Motivations and Innovations 
+
+The major motivation behind the package was to reduce cognitive load and help users produce high-quality graphics with minimal friction. Many newcomers find tidy evaluation, aes mappings, grouped aesthetics, quoted vs. unquoted variables, and palette handling especially confusing.
+
+The newplot package introduces several innovations to address these barriers:
+- a hybrid tidy-evaluation strategy supporting both quoted and unquoted inputs
+- automatic palette scaling based on number of groups
+- consistent theme defaults for polished output
+- intuitive geographic selection across point, line, boxplot, and violin geoms
+- an interactive Shiny gadget that generates reproducible code
+
+Together, these innovations create a more accessible, flexible alternative to verbose ggplot2 workflows.
+
+## Function: new_plot()
+
+At the core of the package is new_plot(), a flexible plotting wrapper designed to simplify common visualization tasks. The function supports quoted and unquoted variable names, making it compatible with both interactive experimentation and scripted workflows. It automatically handles grouping variables when they are provided, selects an appropriate palette that scales to the number of groups, and falls back on viridisLite::viridis() when necessary to ensure clear and distinguishable visual output. Users can choose among point, line, boxplot, and violin geoms and can apply either a minimal or classic theme to create polished, publication-ready figures with minimal effort.
+
+These features make new_plot() especially effective in piped workflows, where it behaves predictably, produces consistent styling, and removes much of the boilerplate often required in ggplot2. The function also provides informative error messages when columns are missing, when grouping variables create incompatible scales, or when users supply unexpected input types.
+
+## Basic Usage Examples
+
+```{r}
+# Basic point plot
+new_plot(mtcars, x = "cyl", y = "mpg", type = "point")
+```
+
+```{r}
+# Grouped Boxplot
+new_plot(
+  mtcars,
+  x = "cyl",
+  y = "mpg",
+  group = "cyl",
+  type = "boxplot",
+  palette = "purple"
+)
+```
+
+```{r}
+# Pipe-friendly workflow (CRAN-safe)
+mtcars |>
+  dplyr::mutate(cyl = factor(cyl)) |>
+  new_plot(x = "cyl", y = "mpg", group = "cyl", type = "violin")
+```
+
+## Interactive Plotting with Shiny Gadget: new_plot_gadget()
+
+In addition to the programmatic interface, the package offers an interactive Shiny gadget. new_plot_gadget() allows users to construct plots visually by selecting variables, choosing plot types, adjusting aesthetics, and viewing the results instantaneously. This interface is particularly appealing to learners who benefit from immediate visual feedback, as well as to analysts who want a rapid prototyping environment for exploring different plot configurations.
+
+The gadget includes a dynamic code generator, allowing users to export the R code that produced their visualization, bridging the gap between interactive exploration and reproducible scripting. Because shiny and miniUI are only loaded at runtime and accessed through explicit namespace calls, the main package remains lightweight and CRAN-friendly.
+
+```{r}
+# Launch the gadget
+new_plot_gadget(iris)
+```
+
+## Proof of Concept: Unit Testing and Validation
+
+During development, the package components were repeatedly tested to confirm consistency, durability, and tidy-evaluation correctness. These tests validated that the function handled both quoted and unquoted variables reliably, produced ggplot objects across all plot types, and returned meaningful error messages.
+
+Below are a few representative tests used during the development process.
+
+Basic Geometry Tests:
+```{r}
+# Test point plot
+p1 <- new_plot(mtcars, x = "cyl", y = "mpg", type = "point")
+stopifnot(inherits(p1, "ggplot"))
+```
+
+```{r}
+# Test violin plot without grouping
+p2 <- new_plot(mtcars, x = "cyl", y = "mpg", type = "violin")
+stopifnot(inherits(p2, "ggplot"))
+```
+
+Quoted Versus Unquoted Inputs:
+```{r}
+# Quoted
+p3 <- new_plot(mtcars, x = "cyl", y = "mpg", type = "line")
+
+# Unquoted
+p4 <- new_plot(mtcars, cyl, mpg, type = "line")
+
+stopifnot(inherits(p3, "ggplot"))
+stopifnot(inherits(p4, "ggplot"))
+```
+
+Grouping Tests:
+```{r}
+# Grouped boxplots
+mtcars2 <- mtcars |> dplyr::mutate(cyl = factor(cyl))
+
+p5 <- new_plot(mtcars2, x = "cyl", y = "mpg", group = "cyl", type = "boxplot")
+stopifnot(inherits(p5, "ggplot"))
+```
+
+Error Handling Tests:
+```{r}
+# Missing column
+tryCatch(
+  new_plot(mtcars, x = "missing", y = "mpg", type = "point"),
+  error = function(e) message("Passed: Missing column error caught")
+)
+```
+
+Testing Palette Behavior
+```{r}
+# Custom palette
+p6 <- new_plot(mtcars2, x = "cyl", y = "mpg", group = "cyl", type = "point", palette = "orange")
+stopifnot(inherits(p6, "ggplot"))
+```
+
+These tests, combined with interactive evaluation through the Shiny gadget, provided strong evidence that the package behaved predictably across scenarios.
+
+## Use Cases 
+
+The newplot package supports a range of practical applications. Students and beginners can use it to learn fundamental plotting concepts without encountering the steepest parts of the ggplot2 learning curve. Analysts engaged in exploratory data analysis or public health reporting can produce clear, interpretable figures quickly.
+
+The gadget serves users who prefer interactive experimentation, allowing them to try different plot types and aesthetics before transitioning to scripted analysis. The clean application programming interface makes the package suitable for teaching environments, rapid prototyping, and any workflow where simplicity and clarity are priorities.
+
+## Development Summary
+
+The development of newplot followed an iterative and reflective process. The earliest versions began as a simple wrapper around ggplot2, intended to reduce common friction points for users. As the function evolved, tidy evaluation was introduced using a hybrid strategy that allows for both quoted and unquoted inputs. This greatly expanded the function’s flexibility, particularly for users who rely heavily on pipelines or dynamically generated variable names.
+
+Next, grouping support was added, along with logic to scale palettes appropriately and ensure that both color and fill aesthetics reflected user input. The function’s theme support was improved to offer consistent styling across different geoms, and informative error handling was added to help users troubleshoot unexpected inputs. Later, the Shiny gadget was integrated, extending the package into a more interactive and user-friendly tool.
+
+Throughout development, attention was paid to R CMD check compatibility. Example code was rewritten using quoted variable names, namespace imports were adjusted to avoid unintended dependencies, and shiny and miniUI were moved to the Suggests field with runtime checks to ensure smooth package installation. These steps helped refine the package into a tool that is both technically sound and accessible to a broad audience.
+
+## Challenges and Solutions 
+
+Several challenges shaped the development of the package. Handling quoted and unquoted variables required careful use of tidy-evaluation tools such as ensym(), sym(), and as_string(). Ensuring that examples complied with R CMD check meant converting all illustrations to use quoted column names, since bare variable names do not exist in checking environments. Palette handling also required thoughtful logic: because custom palettes contain a limited number of colors, new_plot() automatically switches to viridis when needed, preventing ggplot2 from dropping aesthetics or producing confusing warnings.
+
+Namespace issues, especially involving Shiny dependencies, required explicit function calls such as shiny::selectInput() instead of using roxygen imports. This safeguarded package installs for users who do not have shiny or miniUI installed and kept the package in line with CRAN expectations for gadgets. These adjustments strengthened the package’s stability and reliability while preserving full functionality.
+
+## Future Work
+
+Looking ahead, several opportunities exist to expand the capabilities and instructional value of the newplot package. One major direction involves broadening the set of supported geometries to include histograms, density plots, bar charts, smoothing layers, and facetted displays, enabling users to engage with a wider range of exploratory and analytic workflows. Another potential enhancement involves developing customizable themes and reusable style templates—such as institution-specific formats or publication-ready settings—that would make the package more adaptable to real-world reporting needs. Extensions to the palette system, including built-in colorblind-friendly schemes, automated contrast checking, and flexible scale generators, would strengthen accessibility and align the package with visualization best practices.
+
+The Shiny gadget also offers substantial room for growth. Adding controls for faceting, adjusting additional aesthetics (e.g., size, alpha, linetype), incorporating image export options, or embedding a tutorial sidebar would transform the gadget into a more comprehensive teaching and prototyping tool. Additional integration with tidyverse modeling workflows could allow the package to automatically visualize model diagnostics, predictions, or residual structures, creating a smoother bridge between data exploration and statistical modeling.
+
+Finally, ongoing internal improvements—such as expanding unit tests, optimizing palette logic, strengthening error handling, and implementing continuous integration—would support long-term stability and extensibility. If desired, newplot could also be prepared for CRAN submission through additional documentation refinement, dependency checks, and cross-platform testing. These potential developments offer a clear path for evolving newplot into a more powerful, versatile, and educational visualization toolkit.
+
+## Conclusion
+
+The development of newplot reflects a commitment to making data visualization in R more approachable, efficient, and supportive of learning. By streamlining common ggplot2 workflows, handling both quoted and unquoted inputs, and automating aesthetic decisions that often challenge new users, the package lowers the barriers to producing clear and polished graphics. The addition of the Shiny gadget further enhances accessibility by offering an interactive environment where users can explore plotting choices visually and generate reproducible code with ease. Together, these tools create a bridge between intuitive exploration and rigorous analytical practice, benefiting beginners and experienced analysts alike.
+
+Beyond improving usability, newplot also demonstrates careful attention to technical reliability, tidy evaluation principles, and compatibility with R CMD check requirements. The iterative development process—supported by testing, error handling improvements, and thoughtful design decisions—helped shape the package into a stable and flexible resource for teaching, prototyping, and applied analysis. As visualization needs evolve, the foundation built through this project provides a strong platform for future enhancements and continued learning.
+
