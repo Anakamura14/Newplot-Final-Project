@@ -1,8 +1,6 @@
 # tests/testthat/test-new_plot.R
 
-  # tests/testthat/test-new_plot.R
-
-  test_that("new_plot returns a ggplot object for basic usage", {
+test_that("new_plot returns a ggplot object for basic usage", {
     p <- new_plot(mtcars, x = "cyl", y = "mpg", type = "point")
     expect_s3_class(p, "ggplot")
   })
