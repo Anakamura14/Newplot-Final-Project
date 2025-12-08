@@ -169,7 +169,7 @@ new_plot <- function(.data, x, y, group = NULL,
     if (!is.null(group_col)) p <- p + scale_color_manual(values = palette_colors)
 
   } else if (type == "line") {
-    p <- p + geom_line(size = 1.2, alpha = 0.8)
+    p <- p + geom_line(linewidth = 1.2, alpha = 0.8)
     if (!is.null(group_col)) p <- p + scale_color_manual(values = palette_colors)
 
   } else if (type == "boxplot") {

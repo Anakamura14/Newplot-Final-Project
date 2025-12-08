@@ -24,7 +24,9 @@ Suggests:
     shiny,
     miniUI,
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0)
 LazyData: true
 RoxygenNote: 7.3.3
 VignetteBuilder: knitr
+Config/testthat/edition: 3
