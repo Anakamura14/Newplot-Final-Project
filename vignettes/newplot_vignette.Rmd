@@ -29,7 +29,7 @@ The goal of this package is to streamline data visualization, reduce repetitive 
 You can install the development version of newplot like so:
 
 ```{r}
-devtools::install()
+devtools::install_github("Anakamura14/Newplot-Final-Project")
 library(newplot)
 ```
 
@@ -90,14 +90,24 @@ mtcars |>
 
 ## Interactive Plotting with Shiny Gadget: new_plot_gadget()
 
-In addition to the programmatic interface, the package offers an interactive Shiny gadget. new_plot_gadget() allows users to construct plots visually by selecting variables, choosing plot types, adjusting aesthetics, and viewing the results instantaneously. This interface is particularly appealing to learners who benefit from immediate visual feedback, as well as to analysts who want a rapid prototyping environment for exploring different plot configurations.
+In addition to its programmatic interface, the newplot package includes an interactive Shiny gadget designed to support users who prefer a visual, exploratory approach to building plots. The new_plot_gadget() function opens a dynamic interface where users can construct visualizations through a series of intuitive controls rather than writing code directly. This tool was developed with learners, instructors, and exploratory analysts in mind—anyone who benefits from immediate graphical feedback or who wants to rapidly prototype a plot before finalizing it in a scripting workflow.
 
-The gadget includes a dynamic code generator, allowing users to export the R code that produced their visualization, bridging the gap between interactive exploration and reproducible scripting. Because shiny and miniUI are only loaded at runtime and accessed through explicit namespace calls, the main package remains lightweight and CRAN-friendly.
+When the gadget is launched, a two-panel layout appears. On the left, the user is presented with a set of interactive inputs for selecting the X and Y variables, choosing an optional grouping variable, and determining the plot type. Additional controls allow the user to adjust the color palette, select a theme, and add titles, subtitles, or captions. As each option is modified, the plot shown on the right updates instantly, offering a seamless and responsive visualization experience. This design makes it easy to explore multiple plot configurations, understand how aesthetic mappings influence graphical output, and refine visual choices without needing to rewrite code.
+
+Users can launch the gadget directly from their R session:
 
 ```{r}
-# Launch the gadget
+library(newplot)
+
+# Launch the interactive gadget using iris
 new_plot_gadget(iris)
 ```
+
+Once opened, the gadget guides users through a complete visualization workflow. For example, a user analyzing the iris dataset might select Species as the X variable and Sepal.Length as the Y variable, choose to group the plot by species, and then experiment with plot types such as violin or boxplot. Adjusting the palette or theme changes the visual appearance instantly, and entering text into the title fields updates the framing of the plot. When the user is satisfied with the visualization, clicking the “Done” button generates a reproducible code snippet that reflects all selected options. This allows users to transition smoothly from interactive exploration to scripted analysis, reinforcing both learning and reproducibility.
+
+Technically, the gadget is implemented using Shiny and miniUI, which are referenced at runtime rather than loaded as formal imports, ensuring that the core package remains lightweight and CRAN-friendly. If a required dependency is not installed, the function issues a clear and informative error message. The gadget returns both the final plot object and the code used to generate it, providing transparency and supporting best practices in reproducible research.
+
+The inclusion of this interactive tool expands the functionality of newplot beyond standard scripting workflows. It serves as a bridge between visual intuition and programmatic rigor, offering a supportive environment for beginners while also providing experienced analysts with a rapid prototyping tool. By integrating real-time feedback, interactive controls, and automatic code generation, the Shiny gadget enhances both the usability and educational value of the package.
 
 ## Proof of Concept: Unit Testing and Validation
 
