@@ -6,6 +6,10 @@
 #' aesthetics, plot types, themes, palettes, and labels, preview the resulting plot,
 #' and export reproducible new_plot() code.
 #'
+#' @import shiny
+#' @import miniUI
+#' @import glue
+#'
 #' @param data A data frame to visualize.
 #'
 #' @return A Shiny gadget that returns both the rendered ggplot object and the exact
