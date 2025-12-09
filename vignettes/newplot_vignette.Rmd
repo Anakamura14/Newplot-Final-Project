@@ -263,7 +263,7 @@ ph_data,
 x = "age_group",
 y = "systolic_bp",
 type = "violin",
-palette = "green",
+palette = "red",
 title = "Systolic Blood Pressure Across Age Groups"
 )
 ```
