@@ -1,55 +1,210 @@
 
-[![R-CMD-check](https://github.com/Anakamura14/Newplot-Final-Project/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Anakamura14/Newplot-Final-Project/actions/workflows/R-CMD-check.yaml)
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# newplot
+# Newplot
 
-<!-- badges: start -->
+[![R-CMD-check](https://github.com/Anakamura14/Newplot-Final-Project/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Anakamura14/Newplot-Final-Project/actions/workflows/R-CMD-check.yaml)
 
-<!-- badges: end -->
+## Rendered Vignette (HTML)
 
-The goal of newplot is to …
+Click below to view the fully rendered vignette online:
+
+**<https://htmlpreview.github.io/?https://github.com/Anakamura14/Newplot-Final-Project/blob/main/inst/doc/newplot_vignette.html>**
+
+The vignette provides full documentation, usage examples, development
+notes, and future work.
+
+------------------------------------------------------------------------
+
+## Overview
+
+**newplot** is an R package designed to make data visualization faster,
+more intuitive, and more accessible. While **ggplot2** is powerful and
+flexible, new and intermediate users often struggle with repeated setup
+code, theme choices, palette selection, and handling grouping variables.
+Even experienced analysts find themselves writing the same boilerplate
+code across projects.
+
+**newplot** addresses these challenges by offering:
+
+- `new_plot()`: a simplified wrapper around ggplot2 that automates
+  common aesthetic and structural decisions  
+- `new_plot_gadget()`: an interactive Shiny gadget for building
+  visualizations through a graphical interface  
+- A consistent, colorblind-friendly default palette  
+- Automatic grouping behavior and palette scaling  
+- A reproducible, quoted-variable syntax that works cleanly inside
+  scripts and R CMD check environments
+
+The goal is to help users focus on **interpreting their data**, not
+wrestling with syntax.
+
+------------------------------------------------------------------------
+
+## Motivation
+
+The package was created to reduce friction for learners and analysts who
+want clean, publication-ready graphics without extensive setup. Many
+users struggle with:
+
+- remembering which aesthetics belong to which geoms  
+- choosing appropriate color scales  
+- writing repetitive theme code  
+- debugging tidy-evaluation errors  
+- switching between interactive and script-based workflows
+
+By automating these steps, **newplot** provides a stable and predictable
+foundation for visualization.  
+The Shiny gadget extends the package for teaching, prototyping, and
+hands-on exploration by allowing users to visually construct a plot and
+automatically generate reproducible code.
+
+------------------------------------------------------------------------
 
 ## Installation
 
-You can install the development version of newplot from
-[GitHub](https://github.com/) with:
+Install the development version from GitHub:
 
 ``` r
-# install.packages("pak")
-pak::pak("Anakamura14/Newplot-Final-Project")
-```
-
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-``` r
+devtools::install_github("Anakamura14/Newplot-Final-Project")
+#> Using GitHub PAT from the git credential store.
+#> Downloading GitHub repo Anakamura14/Newplot-Final-Project@HEAD
+#> shiny (1.12.0 -> 1.12.1) [CRAN]
+#> Installing 1 packages: shiny
+#> Warning in download.file(urls, destfiles, "libcurl", mode = "wb", ...):
+#> downloaded length 0 != reported length 279
+#> Warning in download.file(urls, destfiles, "libcurl", mode = "wb", ...): cannot
+#> open URL
+#> 'https://cloud.r-project.org/bin/macosx/big-sur-arm64/contrib/4.5/shiny_1.12.0.tgz':
+#> HTTP status was '404 Not Found'
+#> Error in download.file(urls, destfiles, "libcurl", mode = "wb", ...) : 
+#>   cannot open URL 'https://cloud.r-project.org/bin/macosx/big-sur-arm64/contrib/4.5/shiny_1.12.0.tgz'
+#> Warning in download.packages(pkgs, destdir = tmpd, available = available, :
+#> download of package 'shiny' failed
+#> ── R CMD build ─────────────────────────────────────────────────────────────────
+#>      checking for file ‘/private/var/folders/k6/g3skgp_505g84whf915p_py80000gn/T/RtmpS6cbLN/remotes17e1f2c77879c/Anakamura14-Newplot-Final-Project-b28c25d/DESCRIPTION’ ...  ✔  checking for file ‘/private/var/folders/k6/g3skgp_505g84whf915p_py80000gn/T/RtmpS6cbLN/remotes17e1f2c77879c/Anakamura14-Newplot-Final-Project-b28c25d/DESCRIPTION’
+#>   ─  preparing ‘newplot’:
+#>      checking DESCRIPTION meta-information ...  ✔  checking DESCRIPTION meta-information
+#>   ─  checking for LF line-endings in source and make files and shell scripts
+#>   ─  checking for empty or unneeded directories
+#>      Omitted ‘LazyData’ from DESCRIPTION
+#>        NB: this package now depends on R (>= 4.1.0)
+#>        WARNING: Added dependency on R >= 4.1.0 because package code uses the
+#>      pipe |> or function shorthand \(...) syntax added in R 4.1.0.
+#>      File(s) using such syntax:
+#>        ‘new_plot.Rd’
+#>   ─  building ‘newplot_0.1.0.tar.gz’
+#>      
+#> 
 library(newplot)
-## basic example code
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+------------------------------------------------------------------------
+
+## Basic Usage
 
 ``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
+# Simple scatterplot
+new_plot(mtcars, x = "wt", y = "mpg", type = "point")
 ```
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this.
+<img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
 
-You can also embed plots, for example:
+``` r
+# Grouped scatterplot
+new_plot(
+  iris,
+  x = "Sepal.Length",
+  y = "Petal.Length",
+  group = "Species",
+  type = "point",
+  palette = "orange"
+)
+```
 
-<img src="man/figures/README-pressure-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
 
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+``` r
+# Pipe-friendly workflow
+mtcars |>
+  dplyr::mutate(cyl = factor(cyl)) |>
+  new_plot(x = "cyl", y = "mpg", group = "cyl", type = "violin")
+#> Ignoring unknown labels:
+#> • colour : "cyl"
+```
+
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
+
+These examples highlight newplot’s core purpose: reducing repetitive
+code while producing clear, consistent, publication-ready figures.
+
+------------------------------------------------------------------------
+
+## Interactive Shiny Gadget
+
+The `new_plot_gadget()` function creates an interactive visualization
+builder:
+
+``` r
+new_plot_gadget(iris)
+#> Loading required package: shiny
+#> Warning: package 'shiny' was built under R version 4.5.2
+#> 
+#> Listening on http://127.0.0.1:6567
+#> $plot
+```
+
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+
+    #> 
+    #> $code
+    #> new_plot(data,
+    #> x = "Sepal.Length",
+    #> y = "Sepal.Length",
+    #> type = "point",
+    #> theme_style = "minimal")
+
+The gadget allows users to:
+
+- Select variables, plot types, palettes, and themes
+- Preview the plot instantly
+- Export the exact `new_plot()` code for reproducibility
+
+This makes the gadget valuable for teaching, demonstrations, and rapid
+prototyping.
+
+------------------------------------------------------------------------
+
+## Key Features
+
+The `new_plot()` package streamlines the standard ggplot2 workflow by
+automatically managing themes, colors, grouping structures, and palette
+scaling. When no palette is specified, the function defaults to a
+colorblind-friendly viridisLite scheme, ensuring clear and accessible
+visualizations. Its tidy-evaluation–compatible design, which uses quoted
+variable names, supports smooth behavior in scripts, pipelines, and R
+CMD check environments. The package also includes an interactive Shiny
+gadget that allows users to explore visualization options visually and
+export reproducible code. Currently, `new_plot()` supports several
+commonly used plot types, including point, line, boxplot, and violin,
+covering a wide range of exploratory and instructional use cases.
+
+------------------------------------------------------------------------
+
+## Future Development
+
+There are several promising directions for extending the `new_plot()`
+package. One goal is to expand the range of supported geoms by
+incorporating histograms, density plots, bar charts, smoothing layers,
+and other visualization types commonly used in exploratory analysis.
+Future versions may also introduce more advanced thematic controls,
+enabling users to apply reusable style templates or
+organization-specific formatting standards. Additional enhancements to
+the palette system—such as improved contrast checking, expanded
+colorblind-friendly options, and dynamic palette scaling—would further
+strengthen accessibility. The Shiny gadget has significant potential for
+growth as well, including features such as faceting controls, image
+export options, and built-in tutorials for instructional settings.
+Finally, continued refinement of internal validation and automated
+testing would help prepare the package for broader use, including
+potential submission to CRAN.
