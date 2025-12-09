@@ -2,7 +2,7 @@
 % Please edit documentation in R/new_plot_gadget.r
 \name{new_plot_gadget}
 \alias{new_plot_gadget}
-\title{Interactive Shiny Gadget for Building new_plot() Graphics}
+\title{Interactive Shiny Gadget for Constructing new_plot() Figures}
 \usage{
 new_plot_gadget(data)
 }
@@ -10,16 +10,18 @@ new_plot_gadget(data)
 \item{data}{A data frame to visualize.}
 }
 \value{
-A Shiny gadget interface that returns both the plot and the
-  reproducible `new_plot()` code used to generate it.
+A Shiny gadget that returns both the rendered ggplot object and the exact
+  \code{new_plot()} code needed to recreate it.
 }
 \description{
-This gadget provides a graphical interface for constructing plots using
-new_plot(). All variable selections are passed as quoted strings to ensure
-consistency with the new_plot() function requirements.
+This gadget provides a visual interface for building plots using \code{new_plot()}.
+All variables chosen in the UI are automatically passed as quoted column names,
+ensuring compatibility with the function’s requirements. Users can select
+aesthetics, plot types, themes, palettes, and labels, preview the resulting plot,
+and export reproducible new_plot() code.
 }
 \examples{
 \dontrun{
-  new_plot_gadget(mtcars)
+  new_plot_gadget(iris)
 }
 }

@@ -222,7 +222,7 @@ The mtcars dataset provides an opportunity to explore relationships relevant to 
 
 ```{r}
 new_plot(
-  mtcars,
+  mtcars |> dplyr::mutate(cyl = factor(cyl)),
   x = "wt",
   y = "mpg",
   group = "cyl",
@@ -231,7 +231,31 @@ new_plot(
   title = "Fuel Efficiency Declines with Vehicle Weight"
 )
 ```
-In educational contexts, instructors can use newplot to demonstrate key visualization concepts quickly, while students can explore the same concepts in a hands-on way through the Shiny gadget. The combination of guided interaction and automatically generated reproducible code strengthens students’ understanding of ggplot2 mechanics.
+Example 3: Examining Systolic Blood Pressure Across Age Groups
+
+Public health reporting often involves communicating variation in health indicators across demographic categories. The example below uses a small simulated dataset to illustrate how new_plot() can support this type of analysis. Here, systolic blood pressure (SBP) is compared across three age groups using a violin plot, which highlights overall distributional differences and potential disparities.
+
+```{r}
+set.seed(123)
+ph_data <- data.frame(
+age_group = factor(rep(c("18–39", "40–59", "60+"), each = 100)),
+systolic_bp = c(
+rnorm(100, mean = 118, sd = 10),
+rnorm(100, mean = 130, sd = 12),
+rnorm(100, mean = 142, sd = 15)
+)
+)
+
+new_plot(
+ph_data,
+x = "age_group",
+y = "systolic_bp",
+type = "violin",
+palette = "green",
+title = "Systolic Blood Pressure Across Age Groups"
+)
+```
+This visualization reflects patterns commonly encountered in population health data, clearly showing higher blood pressure values in older adults. It also demonstrates how new_plot() handles categorical groupings, applies color palettes automatically, and produces clean, publication-ready distribution plots with minimal code.
 
 ## Development Summary
 

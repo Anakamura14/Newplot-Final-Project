@@ -137,9 +137,12 @@ new_plot <- function(.data, x, y, group = NULL,
   # ---------------------------------------------
   if (!is.null(group_col)) {
     if (is.numeric(data[[group_col]])) {
-      data[[group_col]] <- factor(data[[group_col]])
+      data[[group_col]] <- factor(data[[group_col]], ordered = FALSE)
+    } else if (is.factor(data[[group_col]])) {
+      data[[group_col]] <- factor(data[[group_col]], ordered = FALSE)
     }
   }
+
 
 
   # ---------------------------------------------
