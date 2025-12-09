@@ -20,10 +20,10 @@ Imports:
     rlang,
     glue,
     viridisLite,
-    grDevices
-Suggests:
+    grDevices,
     shiny,
-    miniUI,
+    miniUI
+Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
