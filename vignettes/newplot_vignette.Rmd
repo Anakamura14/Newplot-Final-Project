@@ -22,6 +22,9 @@ knitr::opts_chunk$set(
 
 [![R-CMD-check](https://github.com/Anakamura14/Newplot-Final-Project/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Anakamura14/Newplot-Final-Project/actions/workflows/R-CMD-check.yaml)
 
+**Rendered HTML version:**  
+https://htmlpreview.github.io/?https://github.com/Anakamura14/Newplot-Final-Project/blob/main/inst/doc/newplot_vignette.html
+
 # Newplot
 
 Newplot is an R package created to make the process of building publication-ready graphics more intuitive and accessible. While ggplot2 remains one of the most powerful and flexible visualization frameworks in R, many users—particularly beginners—struggle with the amount of repeated setup code required to produce polished figures. Tasks such as defining aesthetics, selecting themes, choosing palettes, and handling grouping can feel cumbersome, especially during exploratory work or when preparing multiple plots in a single workflow.
