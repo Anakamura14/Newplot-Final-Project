@@ -10,7 +10,7 @@ Authors@R: c(
     )
   )
 Description: The primary goal of this project will be to create a custom graphing
-    function, new_plot(), that builds on ggplot2() by automatically applying my 
+    function, new_plot(), that builds on ggplot2() by automatically applying 
     preferred defaults for themes, colors, and labels. 
 License: GPL-3
 Encoding: UTF-8
@@ -19,7 +19,8 @@ Imports:
     dplyr,
     rlang,
     glue,
-    viridisLite
+    viridisLite,
+    grDevices
 Suggests:
     shiny,
     miniUI,

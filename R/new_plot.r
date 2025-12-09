@@ -1,5 +1,17 @@
-#' Create a standardized, pipe-friendly ggplot with minimal code
+#' Create a streamlined, pipe-friendly ggplot with minimal code
 #'
+#' `new_plot()` is a wrapper around ggplot2 designed to simplify the
+#' creation of high-quality, publication-ready graphics. The function uses
+#' standard evaluation, meaning **all variable names must be provided as
+#' quoted strings** (e.g., `"cyl"`, `"mpg"`). This ensures consistent behavior
+#' across pipelines, scripts, packages, and R CMD check environments.
+#'
+#' The function automatically:
+#' - validates inputs,
+#' - selects a color palette (custom palettes or viridis fallback),
+#' - detects grouping for color/fill scales,
+#' - applies a consistent ggplot theme,
+#' - generates an informative default title when none is provided.
 #'
 #' @import ggplot2
 #' @import dplyr
@@ -9,42 +21,53 @@
 #' @importFrom grDevices colorRampPalette
 #'
 #' @param .data A data frame containing the variables to be plotted.
-#' @param x The x-axis variable. Can be unquoted (e.g., 'cyl') or a string (e.g., '"cyl"').
-#' @param y The y-axis variable. Can be unquoted or quoted.
-#' @param group An optional grouping variable used for color/fill aesthetics. Accepts unquoted or quoted columns names. Defaults to 'NULL'.
-#' @param type A string indicating the type of plot to create. Must be one of: "point", "line", "boxplot", or "violin".
-#' @param palette Optional color palette name. If 'NULL', the color will default to viridis.
-#' @param theme_style A string specifying the ggplot theme style. Can either be minimal or classic. Defaults to minimal.
-#' @param title Optional plot title as a string.
-#' @param subtitle Optional plot subtitle as a string.
-#' @param caption Optional plot caption as a string.
+#' @param x A **quoted** column name specifying the x-axis variable (e.g., `"cyl"`).
+#' @param y A **quoted** column name specifying the y-axis variable (e.g., `"mpg"`).
+#' @param group Optional **quoted** column name used for color and fill grouping.
+#'   Defaults to `NULL`.
+#' @param type A character string indicating the geometry to draw.
+#'   Must be one of `"point"`, `"line"`, `"boxplot"`, or `"violin"`.
+#' @param palette Optional name of a built-in palette.
+#'   Custom palettes include `"cyan"`, `"purple"`, `"red"`, `"blue"`,
+#'   `"green"`, `"orange"`, `"pink"`, and `"yellow"`.
+#'   If `NULL`, a viridis palette is used.
+#' @param theme_style ggplot theme to apply. Must be `"minimal"` or `"classic"`.
+#'   Defaults to `"minimal"`.
+#' @param title Optional plot title. If omitted, a descriptive title is
+#'   generated automatically.
+#' @param subtitle Optional subtitle text.
+#' @param caption Optional caption text.
 #'
-#' @returns A ggplot object.
-#'
-#' @export
+#' @return A `ggplot` object.
 #'
 #' @examples
-#' # Basic point plot using quoted variables
+#'
+#' ## Basic point plot
 #' new_plot(mtcars, x = "cyl", y = "mpg", type = "point")
 #'
-#' # Boxplot with grouping
-#' new_plot(
-#'   mtcars,
-#'   x = "cyl",
-#'   y = "mpg",
-#'   group = "cyl",
-#'   type = "boxplot",
-#'   palette = "D"
-#' )
+#' ## Iris dataset with grouping
+#' iris |>
+#'   new_plot(
+#'     x = "Sepal.Length",
+#'     y = "Petal.Length",
+#'     group = "Species",
+#'     type = "point",
+#'     palette = "orange"
+#'   )
 #'
-#' # Pipe-friendly workflow (CRAN-safe: convert group to factor)
+#' ## Pipe-friendly workflow with a grouping variable
 #' mtcars |>
-#'   dplyr::filter(cyl %in% c(4, 6, 8)) |>
 #'   dplyr::mutate(cyl = factor(cyl)) |>
-#'   new_plot(x = "cyl", y = "mpg", group = "cyl", type = "point")
-
-
-
+#'   new_plot(
+#'     x = "cyl",
+#'     y = "mpg",
+#'     group = "cyl",
+#'     type = "boxplot",
+#'     palette = "purple"
+#'   )
+#'
+#'
+#' @export
 new_plot <- function(.data, x, y, group = NULL,
                      type = c("point","line","boxplot","violin"),
                      palette = NULL,
@@ -67,7 +90,7 @@ new_plot <- function(.data, x, y, group = NULL,
     data <- ungroup(data)
 
   # ---------------------------------------------
-  # Tidy-eval capture of variables (safe hybrid)
+  # Tidy-eval capture of variables
   # ---------------------------------------------
 
   # x
@@ -112,11 +135,22 @@ new_plot <- function(.data, x, y, group = NULL,
   # ---------------------------------------------
   # Determine number of groups
   # ---------------------------------------------
-  n_groups <- if (!is.null(group_col)) {
-    length(unique(data[[group_col]]))
+  # If grouping variable exists and is numeric, convert to factor
+  if (!is.null(group_col)) {
+    if (is.numeric(data[[group_col]])) {
+      data[[group_col]] <- factor(data[[group_col]])
+    }
+  }
+
+  # Determine number of groups
+  if (!is.null(group_col)) {
+    n_groups <- length(unique(data[[group_col]]))
   } else if (is.factor(data[[x_col]])) {
-    length(unique(data[[x_col]]))
-  } else 1L
+    n_groups <- length(unique(data[[x_col]]))
+  } else {
+    n_groups <- 1L
+  }
+
 
   # ---------------------------------------------
   # Color palettes
@@ -136,7 +170,7 @@ new_plot <- function(.data, x, y, group = NULL,
     pal <- palette_list[[palette]]
     palette_colors <- colorRampPalette(pal)(max(n_groups, length(pal)))
   } else {
-    palette_colors <- viridis(n_groups)
+    palette_colors <- viridisLite::viridis(n_groups)
   }
 
   # ---------------------------------------------

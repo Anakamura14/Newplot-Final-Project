@@ -2,7 +2,7 @@
 % Please edit documentation in R/new_plot.r
 \name{new_plot}
 \alias{new_plot}
-\title{Create a standardized, pipe-friendly ggplot with minimal code}
+\title{Create a streamlined, pipe-friendly ggplot with minimal code}
 \usage{
 new_plot(
   .data,
@@ -20,47 +20,74 @@ new_plot(
 \arguments{
 \item{.data}{A data frame containing the variables to be plotted.}
 
-\item{x}{The x-axis variable. Can be unquoted (e.g., 'cyl') or a string (e.g., '"cyl"').}
+\item{x}{A **quoted** column name specifying the x-axis variable (e.g., `"cyl"`).}
 
-\item{y}{The y-axis variable. Can be unquoted or quoted.}
+\item{y}{A **quoted** column name specifying the y-axis variable (e.g., `"mpg"`).}
 
-\item{group}{An optional grouping variable used for color/fill aesthetics. Accepts unquoted or quoted columns names. Defaults to 'NULL'.}
+\item{group}{Optional **quoted** column name used for color and fill grouping.
+Defaults to `NULL`.}
 
-\item{type}{A string indicating the type of plot to create. Must be one of: "point", "line", "boxplot", or "violin".}
+\item{type}{A character string indicating the geometry to draw.
+Must be one of `"point"`, `"line"`, `"boxplot"`, or `"violin"`.}
 
-\item{palette}{Optional color palette name. If 'NULL', the color will default to viridis.}
+\item{palette}{Optional name of a built-in palette.
+Custom palettes include `"cyan"`, `"purple"`, `"red"`, `"blue"`,
+`"green"`, `"orange"`, `"pink"`, and `"yellow"`.
+If `NULL`, a viridis palette is used.}
 
-\item{theme_style}{A string specifying the ggplot theme style. Can either be minimal or classic. Defaults to minimal.}
+\item{theme_style}{ggplot theme to apply. Must be `"minimal"` or `"classic"`.
+Defaults to `"minimal"`.}
 
-\item{title}{Optional plot title as a string.}
+\item{title}{Optional plot title. If omitted, a descriptive title is
+generated automatically.}
 
-\item{subtitle}{Optional plot subtitle as a string.}
+\item{subtitle}{Optional subtitle text.}
 
-\item{caption}{Optional plot caption as a string.}
+\item{caption}{Optional caption text.}
 }
 \value{
-A ggplot object.
+A `ggplot` object.
 }
 \description{
-Create a standardized, pipe-friendly ggplot with minimal code
+`new_plot()` is a wrapper around ggplot2 designed to simplify the
+creation of high-quality, publication-ready graphics. The function uses
+standard evaluation, meaning **all variable names must be provided as
+quoted strings** (e.g., `"cyl"`, `"mpg"`). This ensures consistent behavior
+across pipelines, scripts, packages, and R CMD check environments.
+}
+\details{
+The function automatically:
+- validates inputs,
+- selects a color palette (custom palettes or viridis fallback),
+- detects grouping for color/fill scales,
+- applies a consistent ggplot theme,
+- generates an informative default title when none is provided.
 }
 \examples{
-# Basic point plot using quoted variables
+
+## Basic point plot
 new_plot(mtcars, x = "cyl", y = "mpg", type = "point")
 
-# Boxplot with grouping
-new_plot(
-  mtcars,
-  x = "cyl",
-  y = "mpg",
-  group = "cyl",
-  type = "boxplot",
-  palette = "D"
-)
+## Iris dataset with grouping
+iris |>
+  new_plot(
+    x = "Sepal.Length",
+    y = "Petal.Length",
+    group = "Species",
+    type = "point",
+    palette = "orange"
+  )
 
-# Pipe-friendly workflow (CRAN-safe: convert group to factor)
+## Pipe-friendly workflow with a grouping variable
 mtcars |>
-  dplyr::filter(cyl \%in\% c(4, 6, 8)) |>
   dplyr::mutate(cyl = factor(cyl)) |>
-  new_plot(x = "cyl", y = "mpg", group = "cyl", type = "point")
+  new_plot(
+    x = "cyl",
+    y = "mpg",
+    group = "cyl",
+    type = "boxplot",
+    palette = "purple"
+  )
+
+
 }

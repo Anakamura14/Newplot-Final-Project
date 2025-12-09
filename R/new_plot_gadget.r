@@ -1,52 +1,60 @@
 # NOTE: Do NOT use library(shiny) or library(miniUI)
-# All shiny/miniUI functions must be called with shiny:: or miniUI::
+# All shiny/miniUI functions must be prefixed (shiny::, miniUI::)
 
-#' Title
+#' Interactive Shiny Gadget for Building new_plot() Graphics
+#'
+#' This gadget provides a graphical interface for constructing plots using
+#' new_plot(). All variable selections are passed as quoted strings to ensure
+#' consistency with the new_plot() function requirements.
 #'
 #' @param data A data frame to visualize.
 #'
-#' @returns A shiny gadget interface.
+#' @returns A Shiny gadget interface that returns both the plot and the
+#'   reproducible `new_plot()` code used to generate it.
 #'
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#'   # Launch the interactive gadget
 #'   new_plot_gadget(mtcars)
 #' }
 
 new_plot_gadget <- function(data) {
 
   # ------------------------------------------------------------
-  # CRAN-required dependency checks
+  # Runtime dependency checks
   # ------------------------------------------------------------
   if (!requireNamespace("shiny", quietly = TRUE) ||
       !requireNamespace("miniUI", quietly = TRUE) ||
       !requireNamespace("glue", quietly = TRUE)) {
-    stop("The new_plot_gadget() requires the shiny, miniUI, and glue packages.")
+    stop("new_plot_gadget() requires the shiny, miniUI, and glue packages.")
   }
 
-  # Ensure data is in data.frame format
   data <- as.data.frame(data)
 
   # ------------------------------------------------------------
   # UI
   # ------------------------------------------------------------
   ui <- miniUI::miniPage(
+
     miniUI::gadgetTitleBar("new_plot() Gadget"),
 
     miniUI::miniContentPanel(
+
       shiny::fillRow(
         flex = c(1, 3),
 
         # --------------------------
-        # SIDEBAR INPUTS
+        # Sidebar Inputs
         # --------------------------
         shiny::wellPanel(
-          shiny::selectInput("x", "X Variable:",
+
+          shiny::helpText("All variables selected below will be passed as quoted names."),
+
+          shiny::selectInput("x", "X Variable (quoted):",
                              choices = names(data)),
 
-          shiny::selectInput("y", "Y Variable:",
+          shiny::selectInput("y", "Y Variable (quoted):",
                              choices = names(data)),
 
           shiny::selectInput("group", "Group Variable (optional):",
@@ -58,8 +66,9 @@ new_plot_gadget <- function(data) {
                              selected = "point"),
 
           shiny::selectInput("palette", "Palette:",
-                             choices = c("default", "cyan", "purple", "red", "blue",
-                                         "green", "orange", "pink", "yellow"),
+                             choices = c("default", "cyan", "purple", "red",
+                                         "blue", "green", "orange", "pink",
+                                         "yellow"),
                              selected = "default"),
 
           shiny::selectInput("theme_style", "Theme:",
@@ -72,7 +81,7 @@ new_plot_gadget <- function(data) {
         ),
 
         # --------------------------
-        # PLOT OUTPUT
+        # Plot Output
         # --------------------------
         shiny::plotOutput("plot", height = "100%")
       )
@@ -84,7 +93,7 @@ new_plot_gadget <- function(data) {
   # ------------------------------------------------------------
   server <- function(input, output, session) {
 
-    # Build the plot reactively
+    # Build plot
     reactive_plot <- shiny::reactive({
 
       group_arg <- if (input$group == "None") NULL else input$group
@@ -104,32 +113,28 @@ new_plot_gadget <- function(data) {
       )
     })
 
-    # Render the plot
     output$plot <- shiny::renderPlot({
       reactive_plot()
     })
 
-    # When the user clicks DONE, return plot + code
+    # Return plot + generated code when 'Done' is clicked
     shiny::observeEvent(input$done, {
 
-      group_code <- if (input$group == "None") "" else glue::glue(', group = "{input$group}"')
+      group_code   <- if (input$group == "None") "" else glue::glue(', group = "{input$group}"')
       palette_code <- if (input$palette == "default") "" else glue::glue(', palette = "{input$palette}"')
+      title_code   <- if (nzchar(input$title)) glue::glue(', title = "{input$title}"') else ""
+      subt_code    <- if (nzchar(input$subtitle)) glue::glue(', subtitle = "{input$subtitle}"') else ""
+      capt_code    <- if (nzchar(input$caption)) glue::glue(', caption = "{input$caption}"') else ""
 
       code <- glue::glue(
         'new_plot(data,
           x = "{input$x}",
           y = "{input$y}"{group_code},
           type = "{input$type}"{palette_code},
-          theme_style = "{input$theme_style}",
-          title = "{input$title}",
-          subtitle = "{input$subtitle}",
-          caption = "{input$caption}")'
+          theme_style = "{input$theme_style}"{title_code}{subt_code}{capt_code})'
       )
 
-      shiny::stopApp(list(
-        plot = reactive_plot(),
-        code = code
-      ))
+      shiny::stopApp(list(plot = reactive_plot(), code = code))
     })
   }
 

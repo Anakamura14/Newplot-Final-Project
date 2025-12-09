@@ -2,7 +2,7 @@
 % Please edit documentation in R/new_plot_gadget.r
 \name{new_plot_gadget}
 \alias{new_plot_gadget}
-\title{Title}
+\title{Interactive Shiny Gadget for Building new_plot() Graphics}
 \usage{
 new_plot_gadget(data)
 }
@@ -10,14 +10,16 @@ new_plot_gadget(data)
 \item{data}{A data frame to visualize.}
 }
 \value{
-A shiny gadget interface.
+A Shiny gadget interface that returns both the plot and the
+  reproducible `new_plot()` code used to generate it.
 }
 \description{
-Title
+This gadget provides a graphical interface for constructing plots using
+new_plot(). All variable selections are passed as quoted strings to ensure
+consistency with the new_plot() function requirements.
 }
 \examples{
 \dontrun{
-  # Launch the interactive gadget
   new_plot_gadget(mtcars)
 }
 }
