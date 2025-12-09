@@ -87,12 +87,11 @@ new_plot <- function(.data, x, y, group = NULL,
   if (!inherits(data, "data.frame"))
     stop("data must be a data.frame")
   if ("grouped_df" %in% class(data))
-    data <- ungroup(data)
+    data <- dplyr::ungroup(data)
 
   # ---------------------------------------------
   # Tidy-eval capture of variables
   # ---------------------------------------------
-
   # x
   if (is.character(x)) {
     x_sym <- rlang::sym(x)
@@ -127,22 +126,25 @@ new_plot <- function(.data, x, y, group = NULL,
   # ---------------------------------------------
   # Check column existence
   # ---------------------------------------------
-  if (!x_col %in% names(data)) stop(glue("Column '{x_col}' not found in data."))
-  if (!y_col %in% names(data)) stop(glue("Column '{y_col}' not found in data."))
+  if (!x_col %in% names(data)) stop(glue::glue("Column '{x_col}' not found in data."))
+  if (!y_col %in% names(data)) stop(glue::glue("Column '{y_col}' not found in data."))
   if (!is.null(group_col) && !group_col %in% names(data))
-    stop(glue("Grouping column '{group_col}' not found in data."))
+    stop(glue::glue("Grouping column '{group_col}' not found in data."))
+
 
   # ---------------------------------------------
-  # Determine number of groups
+  # Convert numeric grouping variable BEFORE plotting
   # ---------------------------------------------
-  # If grouping variable exists and is numeric, convert to factor
   if (!is.null(group_col)) {
     if (is.numeric(data[[group_col]])) {
       data[[group_col]] <- factor(data[[group_col]])
     }
   }
 
+
+  # ---------------------------------------------
   # Determine number of groups
+  # ---------------------------------------------
   if (!is.null(group_col)) {
     n_groups <- length(unique(data[[group_col]]))
   } else if (is.factor(data[[x_col]])) {
@@ -168,71 +170,78 @@ new_plot <- function(.data, x, y, group = NULL,
 
   if (!is.null(palette) && palette %in% names(palette_list)) {
     pal <- palette_list[[palette]]
-    palette_colors <- colorRampPalette(pal)(max(n_groups, length(pal)))
+    palette_colors <- grDevices::colorRampPalette(pal)(max(n_groups, length(pal)))
   } else {
     palette_colors <- viridisLite::viridis(n_groups)
   }
+
 
   # ---------------------------------------------
   # Themes
   # ---------------------------------------------
   theme_style <- match.arg(theme_style)
-  theme_choice <- switch(theme_style,
-                         minimal = theme_minimal(base_size = 14),
-                         classic = theme_classic(base_size = 14))
+  theme_choice <- switch(
+    theme_style,
+    minimal = ggplot2::theme_minimal(base_size = 14),
+    classic = ggplot2::theme_classic(base_size = 14)
+  )
+
 
   # ---------------------------------------------
-  # Base aesthetics (modern tidy evaluation)
+  # Base aesthetics
   # ---------------------------------------------
   if (is.null(group_sym)) {
-    p <- ggplot(data, aes(!!x_sym, !!y_sym))
+    p <- ggplot2::ggplot(data, ggplot2::aes(!!x_sym, !!y_sym))
   } else {
-    p <- ggplot(data, aes(!!x_sym, !!y_sym, color = !!group_sym, fill = !!group_sym))
+    p <- ggplot2::ggplot(data, ggplot2::aes(!!x_sym, !!y_sym, color = !!group_sym, fill = !!group_sym))
   }
 
-  # ---------------------------------------------
-  # Normalize type arg
-  # ---------------------------------------------
-  type <- match.arg(type)
 
   # ---------------------------------------------
   # Geometry selection
   # ---------------------------------------------
+  type <- match.arg(type)
+
   if (type == "point") {
-    p <- p + geom_point(size = 3, alpha = 0.8)
-    if (!is.null(group_col)) p <- p + scale_color_manual(values = palette_colors)
+    p <- p + ggplot2::geom_point(size = 3, alpha = 0.8)
+    if (!is.null(group_col)) p <- p + ggplot2::scale_color_manual(values = palette_colors)
 
   } else if (type == "line") {
-    p <- p + geom_line(linewidth = 1.2, alpha = 0.8)
-    if (!is.null(group_col)) p <- p + scale_color_manual(values = palette_colors)
+    p <- p + ggplot2::geom_line(linewidth = 1.2, alpha = 0.8)
+    if (!is.null(group_col)) p <- p + ggplot2::scale_color_manual(values = palette_colors)
 
   } else if (type == "boxplot") {
-    p <- p + geom_boxplot(alpha = 0.8, color = "black")
-    if (!is.null(group_col)) p <- p + scale_fill_manual(values = palette_colors)
-    else p <- p + scale_fill_manual(values = palette_colors[1])
+    p <- p + ggplot2::geom_boxplot(alpha = 0.8, color = "black")
+    if (!is.null(group_col)) p <- p + ggplot2::scale_fill_manual(values = palette_colors)
+    else p <- p + ggplot2::scale_fill_manual(values = palette_colors[1])
 
   } else if (type == "violin") {
 
     if (!is.null(group_col)) {
-      p <- p + geom_violin(alpha = 0.8, scale = "width", trim = FALSE, color = "black") +
-        scale_fill_manual(values = palette_colors)
+      p <- p + ggplot2::geom_violin(alpha = 0.8, scale = "width", trim = FALSE, color = "black") +
+        ggplot2::scale_fill_manual(values = palette_colors)
 
     } else if (is.factor(data[[x_col]])) {
-      p <- p + geom_violin(aes(fill = !!x_sym), alpha = 0.8, scale = "width", trim = FALSE, color = "black") +
-        scale_fill_manual(values = palette_colors)
+      p <- p + ggplot2::geom_violin(
+        ggplot2::aes(fill = !!x_sym),
+        alpha = 0.8, scale = "width", trim = FALSE, color = "black"
+      ) +
+        ggplot2::scale_fill_manual(values = palette_colors)
 
     } else {
-      p <- p + geom_violin(fill = palette_colors[1], alpha = 0.9, scale = "width", trim = FALSE, color = "black")
+      p <- p + ggplot2::geom_violin(fill = palette_colors[1], alpha = 0.9,
+                                    scale = "width", trim = FALSE, color = "black")
     }
   }
+
 
   # ---------------------------------------------
   # Labels + Theme
   # ---------------------------------------------
-  title_text <- if (!is.null(title)) title else glue("Plot of {y_col} by {x_col}")
+  title_text <- if (!is.null(title)) title else glue::glue("Plot of {y_col} by {x_col}")
 
   p <- p + theme_choice +
-    labs(
+    ggplot2::labs(
       title = title_text,
       subtitle = subtitle,
       caption = caption,
