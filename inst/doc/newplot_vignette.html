@@ -340,12 +340,33 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h1 class="title toc-ignore">Newplot Vignette</h1>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#newplot" id="toc-newplot"><span class="toc-section-number">1</span> Newplot</a>
+<ul>
+<li><a href="#installation" id="toc-installation"><span class="toc-section-number">1.1</span> Installation</a></li>
+<li><a href="#motivation-and-background" id="toc-motivation-and-background"><span class="toc-section-number">1.2</span> Motivation and Background</a></li>
+<li><a href="#intended-users" id="toc-intended-users"><span class="toc-section-number">1.3</span> Intended Users</a></li>
+<li><a href="#getting-started" id="toc-getting-started"><span class="toc-section-number">1.4</span> Getting Started</a></li>
+<li><a href="#the-new_plot-function" id="toc-the-new_plot-function"><span class="toc-section-number">1.5</span> The new_plot() Function</a></li>
+<li><a href="#basic-usage-examples" id="toc-basic-usage-examples"><span class="toc-section-number">1.6</span> Basic Usage Examples</a></li>
+<li><a href="#interactive-visualization-with-shiny-gadget-new_plot_gadget" id="toc-interactive-visualization-with-shiny-gadget-new_plot_gadget"><span class="toc-section-number">1.7</span> Interactive Visualization with
+Shiny Gadget: new_plot_gadget()</a></li>
+<li><a href="#proof-of-concept-testing-and-validation" id="toc-proof-of-concept-testing-and-validation"><span class="toc-section-number">1.8</span> Proof of Concept: Testing and
+Validation</a></li>
+<li><a href="#use-cases" id="toc-use-cases"><span class="toc-section-number">1.9</span> Use Cases</a></li>
+<li><a href="#development-summary" id="toc-development-summary"><span class="toc-section-number">1.10</span> Development Summary</a></li>
+<li><a href="#future-work" id="toc-future-work"><span class="toc-section-number">1.11</span> Future Work</a></li>
+<li><a href="#conclusion" id="toc-conclusion"><span class="toc-section-number">1.12</span> Conclusion</a></li>
+</ul></li>
+</ul>
+</div>
 
 <p><a href="https://github.com/Anakamura14/Newplot-Final-Project/actions/workflows/R-CMD-check.yaml"><img role="img" aria-label="R-CMD-check" src="data:image/svg+xml; charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTIiIGhlaWdodD0iMjAiPgogIDx0aXRsZT5SLUNNRC1jaGVjayAtIHBhc3Npbmc8L3RpdGxlPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJ3b3JrZmxvdy1maWxsIiB4MT0iNTAlIiB5MT0iMCUiIHgyPSI1MCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agc3RvcC1jb2xvcj0iIzQ0NEQ1NiIgb2Zmc2V0PSIwJSI+PC9zdG9wPgogICAgICA8c3RvcCBzdG9wLWNvbG9yPSIjMjQyOTJFIiBvZmZzZXQ9IjEwMCUiPjwvc3RvcD4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9InN0YXRlLWZpbGwiIHgxPSI1MCUiIHkxPSIwJSIgeDI9IjUwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBzdG9wLWNvbG9yPSIjMzREMDU4IiBvZmZzZXQ9IjAlIj48L3N0b3A+CiAgICAgIDxzdG9wIHN0b3AtY29sb3I9IiMyOEE3NDUiIG9mZnNldD0iMTAwJSI+PC9zdG9wPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgIDxnIGZvbnQtZmFtaWx5PSImIzM5O0RlamFWdSBTYW5zJiMzOTssVmVyZGFuYSxHZW5ldmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMSI+CiAgICAgIDxwYXRoIGlkPSJ3b3JrZmxvdy1iZyIgZD0iTTAsMyBDMCwxLjM0MzEgMS4zNTUyLDAgMy4wMjcwMjcwMywwIEwxMDIsMCBMMTAyLDIwIEwzLjAyNzAyNzAzLDIwIEMxLjM1NTIsMjAgMCwxOC42NTY5IDAsMTcgTDAsMyBaIiBmaWxsPSJ1cmwoI3dvcmtmbG93LWZpbGwpIiBmaWxsLXJ1bGU9Im5vbnplcm8iPjwvcGF0aD4KICAgICAgPHRleHQgZmlsbD0iIzAxMDEwMSIgZmlsbC1vcGFjaXR5PSIuMyI+CiAgICAgICAgPHRzcGFuIHg9IjIyLjE5ODE5ODIiIHk9IjE1IiBhcmlhLWhpZGRlbj0idHJ1ZSI+Ui1DTUQtY2hlY2s8L3RzcGFuPgogICAgICA8L3RleHQ+CiAgICAgIDx0ZXh0IGZpbGw9IiNGRkZGRkYiPgogICAgICAgIDx0c3BhbiB4PSIyMi4xOTgxOTgyIiB5PSIxNCI+Ui1DTUQtY2hlY2s8L3RzcGFuPgogICAgICA8L3RleHQ+CiAgICA8L2c+CiAgICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMDIpIiBmb250LWZhbWlseT0iJiMzOTtEZWphVnUgU2FucyYjMzk7LFZlcmRhbmEsR2VuZXZhLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTEiPgogICAgICA8cGF0aCBkPSJNMCAwaDQ2LjkzOUM0OC42MjkgMCA1MCAxLjM0MyA1MCAzdjE0YzAgMS42NTctMS4zNyAzLTMuMDYxIDNIMFYweiIgaWQ9InN0YXRlLWJnIiBmaWxsPSJ1cmwoI3N0YXRlLWZpbGwpIiBmaWxsLXJ1bGU9Im5vbnplcm8iPjwvcGF0aD4KICAgICAgPHRleHQgZmlsbD0iIzAxMDEwMSIgZmlsbC1vcGFjaXR5PSIuMyIgYXJpYS1oaWRkZW49InRydWUiPgogICAgICAgIDx0c3BhbiB4PSI0IiB5PSIxNSI+cGFzc2luZzwvdHNwYW4+CiAgICAgIDwvdGV4dD4KICAgICAgPHRleHQgZmlsbD0iI0ZGRkZGRiI+CiAgICAgICAgPHRzcGFuIHg9IjQiIHk9IjE0Ij5wYXNzaW5nPC90c3Bhbj4KICAgICAgPC90ZXh0PgogICAgPC9nPgogICAgPHBhdGggZmlsbD0iIzk1OURBNSIgZD0iTTExIDNjLTMuODY4IDAtNyAzLjEzMi03IDdhNi45OTYgNi45OTYgMCAwIDAgNC43ODYgNi42NDFjLjM1LjA2Mi40ODItLjE0OC40ODItLjMzMiAwLS4xNjYtLjAxLS43MTgtLjAxLTEuMzA0LTEuNzU4LjMyNC0yLjIxMy0uNDI5LTIuMzUzLS44MjItLjA3OS0uMjAyLS40Mi0uODIzLS43MTctLjk5LS4yNDUtLjEzLS41OTUtLjQ1NC0uMDEtLjQ2My41NTItLjAwOS45NDYuNTA4IDEuMDc3LjcxOC42MyAxLjA1OCAxLjYzNi43NiAyLjAzOS41NzcuMDYxLS40NTUuMjQ1LS43NjEuNDQ2LS45MzYtMS41NTctLjE3NS0zLjE4NS0uNzc5LTMuMTg1LTMuNDU2IDAtLjc2Mi4yNzEtMS4zOTIuNzE4LTEuODgyLS4wNy0uMTc1LS4zMTUtLjg5Mi4wNy0xLjg1NSAwIDAgLjU4Ni0uMTgzIDEuOTI1LjcxOGE2LjUgNi41IDAgMCAxIDEuNzUtLjIzNiA2LjUgNi41IDAgMCAxIDEuNzUuMjM2YzEuMzM4LS45MSAxLjkyNS0uNzE4IDEuOTI1LS43MTguMzg1Ljk2My4xNCAxLjY4LjA3IDEuODU1LjQ0Ni40OS43MTcgMS4xMTIuNzE3IDEuODgyIDAgMi42ODYtMS42MzYgMy4yOC0zLjE5NCAzLjQ1Ni4yNTQuMjE5LjQ3My42MzkuNDczIDEuMjk1IDAgLjkzNi0uMDA5IDEuNjg5LS4wMDkgMS45MjUgMCAuMTg0LjEzMS40MDIuNDgxLjMzMkE3LjAxMSA3LjAxMSAwIDAgMCAxOCAxMGMwLTMuODY3LTMuMTMzLTctNy03eiI+PC9wYXRoPgogIDwvZz4KPC9zdmc+Cgo=" alt="R-CMD-check" /></a></p>
 <p><strong>Rendered HTML version:</strong><br />
 <a href="https://htmlpreview.github.io/?https://github.com/Anakamura14/Newplot-Final-Project/blob/main/inst/doc/newplot_vignette.html" class="uri">https://htmlpreview.github.io/?https://github.com/Anakamura14/Newplot-Final-Project/blob/main/inst/doc/newplot_vignette.html</a></p>
-<div id="newplot" class="section level1">
-<h1>Newplot</h1>
+<div id="newplot" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Newplot</h1>
 <p>Newplot is an R package created to make the process of building
 publication-ready graphics more intuitive and accessible. While ggplot2
 remains one of the most powerful and flexible visualization frameworks
@@ -361,13 +382,14 @@ interactive Shiny gadget (new_plot_gadget()) that enables users to build
 visualizations through a graphical interface and automatically generate
 the corresponding new_plot() code. Together, these tools support
 smoother learning, faster prototyping, and more efficient analysis.</p>
-<div id="installation" class="section level2">
-<h2>Installation</h2>
+<div id="installation" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> Installation</h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;Anakamura14/Newplot-Final-Project&quot;</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(newplot)</span></code></pre></div>
 </div>
-<div id="motivation-and-background" class="section level2">
-<h2>Motivation and Background</h2>
+<div id="motivation-and-background" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> Motivation and
+Background</h2>
 <p>The central motivation behind newplot comes from recognizing how
 frequently new or intermediate R users struggle with the structure of
 ggplot2 syntax. Even experienced users can find themselves repeatedly
@@ -389,8 +411,8 @@ analysts who prefer guided exploration. At the same time, the
 reproducible code output ensures that the learning process remains
 grounded in best practices.</p>
 </div>
-<div id="intended-users" class="section level2">
-<h2>Intended Users</h2>
+<div id="intended-users" class="section level2" number="1.3">
+<h2><span class="header-section-number">1.3</span> Intended Users</h2>
 <p>Although the package is accessible to users with very little R
 experience, it is equally advantageous for more advanced analysts who
 routinely create visualizations as part of their workflow. Students in
@@ -403,8 +425,8 @@ also incorporate the package into teaching, using both the function and
 the gadget to demonstrate how aesthetic decisions translate into
 code.</p>
 </div>
-<div id="getting-started" class="section level2">
-<h2>Getting Started</h2>
+<div id="getting-started" class="section level2" number="1.4">
+<h2><span class="header-section-number">1.4</span> Getting Started</h2>
 <p>Once the package is loaded, creating a plot requires only a few
 arguments. A simple scatterplot, for example, can be produced with:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">new_plot</span>(mtcars, <span class="at">x =</span> <span class="st">&quot;wt&quot;</span>, <span class="at">y =</span> <span class="st">&quot;mpg&quot;</span>, <span class="at">type =</span> <span class="st">&quot;point&quot;</span>)</span></code></pre></div>
@@ -419,8 +441,9 @@ naturally with tidyverse pipelines as well:</p>
 reducing the amount of repeated setup code required for ggplot2 while
 maintaining clarity and reproducibility.</p>
 </div>
-<div id="the-new_plot-function" class="section level2">
-<h2>The new_plot() Function</h2>
+<div id="the-new_plot-function" class="section level2" number="1.5">
+<h2><span class="header-section-number">1.5</span> The new_plot()
+Function</h2>
 <p>The new_plot() function serves as the core of the package. It accepts
 quoted variable names, validates inputs, determines grouping structure,
 selects color palettes, and applies themes in a systematic way. By
@@ -437,8 +460,9 @@ and violin. These options cover a substantial portion of exploratory
 visualization needs while keeping the interface focused and
 teachable.</p>
 </div>
-<div id="basic-usage-examples" class="section level2">
-<h2>Basic Usage Examples</h2>
+<div id="basic-usage-examples" class="section level2" number="1.6">
+<h2><span class="header-section-number">1.6</span> Basic Usage
+Examples</h2>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Basic point plot</span></span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">new_plot</span>(mtcars, <span class="at">x =</span> <span class="st">&quot;cyl&quot;</span>, <span class="at">y =</span> <span class="st">&quot;mpg&quot;</span>, <span class="at">type =</span> <span class="st">&quot;point&quot;</span>)</span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Colored scatter plot</span></span>
@@ -464,8 +488,9 @@ teachable.</p>
 <span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">cyl =</span> <span class="fu">factor</span>(cyl)) <span class="sc">|&gt;</span></span>
 <span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="fu">new_plot</span>(<span class="at">x =</span> <span class="st">&quot;cyl&quot;</span>, <span class="at">y =</span> <span class="st">&quot;mpg&quot;</span>, <span class="at">group =</span> <span class="st">&quot;cyl&quot;</span>, <span class="at">type =</span> <span class="st">&quot;violin&quot;</span>)</span></code></pre></div>
 </div>
-<div id="interactive-visualization-with-shiny-gadget-new_plot_gadget" class="section level2">
-<h2>Interactive Visualization with Shiny Gadget: new_plot_gadget()</h2>
+<div id="interactive-visualization-with-shiny-gadget-new_plot_gadget" class="section level2" number="1.7">
+<h2><span class="header-section-number">1.7</span> Interactive
+Visualization with Shiny Gadget: new_plot_gadget()</h2>
 <p>The package’s Shiny gadget expands its usability by providing a fully
 interactive environment for building plots. Instead of writing code,
 users choose variables, plot types, themes, and palettes through a
@@ -490,8 +515,9 @@ returns both the constructed ggplot object and the exact R code that
 produced it, bridging the gap between graphical interaction and
 script-based analysis.</p>
 </div>
-<div id="proof-of-concept-testing-and-validation" class="section level2">
-<h2>Proof of Concept: Testing and Validation</h2>
+<div id="proof-of-concept-testing-and-validation" class="section level2" number="1.8">
+<h2><span class="header-section-number">1.8</span> Proof of Concept:
+Testing and Validation</h2>
 <p>During development, the package underwent extensive testing to ensure
 robust performance across a variety of conditions. Tests verified that
 the function produced ggplot objects across all supported geometry
@@ -555,8 +581,8 @@ supplied.</p>
 gadget, provided strong evidence that the package behaved predictably
 across scenarios.</p>
 </div>
-<div id="use-cases" class="section level2">
-<h2>Use Cases</h2>
+<div id="use-cases" class="section level2" number="1.9">
+<h2><span class="header-section-number">1.9</span> Use Cases</h2>
 <p>Newplot supports a variety of real-world workflows.</p>
 <p>Example 1: Exploring Species Differences in the iris Dataset</p>
 <p>The iris dataset offers a familiar and intuitive way to demonstrate
@@ -614,7 +640,7 @@ distributional differences and potential disparities.</p>
 <span id="cb18-13"><a href="#cb18-13" tabindex="-1"></a><span class="at">x =</span> <span class="st">&quot;age_group&quot;</span>,</span>
 <span id="cb18-14"><a href="#cb18-14" tabindex="-1"></a><span class="at">y =</span> <span class="st">&quot;systolic_bp&quot;</span>,</span>
 <span id="cb18-15"><a href="#cb18-15" tabindex="-1"></a><span class="at">type =</span> <span class="st">&quot;violin&quot;</span>,</span>
-<span id="cb18-16"><a href="#cb18-16" tabindex="-1"></a><span class="at">palette =</span> <span class="st">&quot;green&quot;</span>,</span>
+<span id="cb18-16"><a href="#cb18-16" tabindex="-1"></a><span class="at">palette =</span> <span class="st">&quot;red&quot;</span>,</span>
 <span id="cb18-17"><a href="#cb18-17" tabindex="-1"></a><span class="at">title =</span> <span class="st">&quot;Systolic Blood Pressure Across Age Groups&quot;</span></span>
 <span id="cb18-18"><a href="#cb18-18" tabindex="-1"></a>)</span></code></pre></div>
 <p>This visualization reflects patterns commonly encountered in
@@ -623,8 +649,9 @@ older adults. It also demonstrates how new_plot() handles categorical
 groupings, applies color palettes automatically, and produces clean,
 publication-ready distribution plots with minimal code.</p>
 </div>
-<div id="development-summary" class="section level2">
-<h2>Development Summary</h2>
+<div id="development-summary" class="section level2" number="1.10">
+<h2><span class="header-section-number">1.10</span> Development
+Summary</h2>
 <p>Newplot began as a lightweight wrapper around ggplot2, created to
 reduce the amount of repeated setup code that users often write. Over
 time, the function was expanded to include automated palette management,
@@ -641,8 +668,8 @@ miniUI::, protecting users who do not have those packages installed.
 These refinements strengthened the package’s stability and ensured
 predictable behavior across systems.</p>
 </div>
-<div id="future-work" class="section level2">
-<h2>Future Work</h2>
+<div id="future-work" class="section level2" number="1.11">
+<h2><span class="header-section-number">1.11</span> Future Work</h2>
 <p>There are many potential directions for extending the functionality
 of newplot. Additional geometries—such as histograms, density plots, bar
 charts, and smoothing layers—could expand the package’s reach into a
@@ -658,8 +685,8 @@ refinement of internal error handling and automated testing would
 further strengthen the package and prepare it for broader distribution,
 including potential submission to CRAN.</p>
 </div>
-<div id="conclusion" class="section level2">
-<h2>Conclusion</h2>
+<div id="conclusion" class="section level2" number="1.12">
+<h2><span class="header-section-number">1.12</span> Conclusion</h2>
 <p>Newplot was developed with the goal of making data visualization in R
 more approachable, consistent, and efficient. By reducing the amount of
 repeated setup code required by ggplot2 and automating several aesthetic
