@@ -1,6 +1,9 @@
 ---
 title: "Newplot Vignette"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: true
 vignette: >
   %\VignetteIndexEntry{Newplot Vignette}
   %\VignetteEngine{knitr::rmarkdown}
@@ -8,7 +11,13 @@ vignette: >
 ---
 
 ```{r, include=FALSE}
-knitr::opts_chunk$set(eval = FALSE)
+knitr::opts_chunk$set(
+  eval = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 7,
+  fig.height = 5
+)
 ```
 
 [![R-CMD-check](https://github.com/Anakamura14/Newplot-Final-Project/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Anakamura14/Newplot-Final-Project/actions/workflows/R-CMD-check.yaml)
