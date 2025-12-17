@@ -29,7 +29,7 @@ new_plot_gadget <- function(data) {
   if (!requireNamespace("shiny", quietly = TRUE) ||
       !requireNamespace("miniUI", quietly = TRUE) ||
       !requireNamespace("glue", quietly = TRUE)) {
-    stop("new_plot_gadget() requires the shiny, miniUI, and glue packages.", call. = FALSE)
+    stop("new_plot_gadget() requires the shiny, miniUI, and glue packages.")
   }
 
   # Convert input to data frame
@@ -57,35 +57,29 @@ new_plot_gadget <- function(data) {
 
           shiny::helpText("All variables will be passed as quoted column names."),
 
-          shiny::selectInput("x", "X Variable:", choices = col_names),
-          shiny::selectInput("y", "Y Variable:", choices = col_names),
+          shiny::selectInput("x", "X Variable:",
+                             choices = col_names),
 
-          shiny::selectInput(
-            "group", "Group (optional):",
-            choices = c("None", col_names),
-            selected = "None"
-          ),
+          shiny::selectInput("y", "Y Variable:",
+                             choices = col_names),
 
-          shiny::selectInput(
-            "type", "Plot Type:",
-            choices = c("point", "line", "boxplot", "violin"),
-            selected = "point"
-          ),
+          shiny::selectInput("group", "Group (optional):",
+                             choices = c("None", col_names),
+                             selected = "None"),
 
-          shiny::selectInput(
-            "palette", "Palette:",
-            choices = c(
-              "default", "cyan", "purple", "red",
-              "blue", "green", "orange", "pink", "yellow"
-            ),
-            selected = "default"
-          ),
+          shiny::selectInput("type", "Plot Type:",
+                             choices = c("point", "line", "boxplot", "violin"),
+                             selected = "point"),
 
-          shiny::selectInput(
-            "theme_style", "Theme:",
-            choices = c("minimal", "classic"),
-            selected = "minimal"
-          ),
+          shiny::selectInput("palette", "Palette:",
+                             choices = c("default", "cyan", "purple", "red",
+                                         "blue", "green", "orange", "pink",
+                                         "yellow"),
+                             selected = "default"),
+
+          shiny::selectInput("theme_style", "Theme:",
+                             choices = c("minimal", "classic"),
+                             selected = "minimal"),
 
           shiny::textInput("title", "Title:", ""),
           shiny::textInput("subtitle", "Subtitle:", ""),
@@ -105,57 +99,52 @@ new_plot_gadget <- function(data) {
   # ---------------------------------------------------------------------------
   server <- function(input, output, session) {
 
-    # Reactive plot builder with graceful error handling
+    # Reactive plot builder
     reactive_plot <- shiny::reactive({
 
-      group_arg   <- if (input$group == "None") NULL else input$group
+      # ---------------------------
+      # Prepare grouping variable
+      # ---------------------------
+      group_arg <- if (input$group == "None") NULL else input$group
       palette_arg <- if (input$palette == "default") NULL else input$palette
 
+      # Convert numeric grouping variable → factor (matches new_plot logic)
       data_mod <- data
       if (!is.null(group_arg) && is.numeric(data_mod[[group_arg]])) {
         data_mod[[group_arg]] <- factor(data_mod[[group_arg]])
       }
 
-      tryCatch(
-        {
-          new_plot(
-            data_mod,
-            x = input$x,
-            y = input$y,
-            group = group_arg,
-            type = input$type,
-            palette = palette_arg,
-            theme_style = input$theme_style,
-            title = input$title,
-            subtitle = input$subtitle,
-            caption = input$caption
-          )
-        },
-        error = function(e) {
-          shiny::showNotification(e$message, type = "error", duration = 5)
-          NULL
-        }
+      # Generate plot object
+      new_plot(
+        data_mod,
+        x = input$x,
+        y = input$y,
+        group = group_arg,
+        type = input$type,
+        palette = palette_arg,
+        theme_style = input$theme_style,
+        title = input$title,
+        subtitle = input$subtitle,
+        caption = input$caption
       )
     })
 
-    # Render preview (only when plot is valid)
+    # Render preview
     output$plot <- shiny::renderPlot({
-      p <- reactive_plot()
-      if (!is.null(p)) p
+      reactive_plot()
     })
 
     # When user clicks DONE: return ggplot + code
     shiny::observeEvent(input$done, {
 
-      plot_obj <- reactive_plot()
-      if (is.null(plot_obj)) return()
-
+      # Build code components
       group_code   <- if (input$group == "None") "" else glue::glue(', group = "{input$group}"')
       palette_code <- if (input$palette == "default") "" else glue::glue(', palette = "{input$palette}"')
       title_code   <- if (nzchar(input$title)) glue::glue(', title = "{input$title}"') else ""
       subt_code    <- if (nzchar(input$subtitle)) glue::glue(', subtitle = "{input$subtitle}"') else ""
       capt_code    <- if (nzchar(input$caption)) glue::glue(', caption = "{input$caption}"') else ""
 
+      # Assemble reproducible code
       code <- glue::glue(
         'new_plot(data,
           x = "{input$x}",
@@ -164,8 +153,9 @@ new_plot_gadget <- function(data) {
           theme_style = "{input$theme_style}"{title_code}{subt_code}{capt_code})'
       )
 
+      # Return output
       shiny::stopApp(list(
-        plot = plot_obj,
+        plot = reactive_plot(),
         code = code
       ))
     })
@@ -177,10 +167,6 @@ new_plot_gadget <- function(data) {
   shiny::runGadget(
     ui,
     server,
-    viewer = shiny::dialogViewer(
-      "new_plot Gadget",
-      width = 1000,
-      height = 800
-    )
+    viewer = shiny::dialogViewer("new_plot Gadget", width = 1000, height = 800)
   )
 }
