@@ -85,34 +85,19 @@ new_plot <- function(.data, x, y, group = NULL,
   # Validate data
   # ---------------------------------------------
   if (!inherits(data, "data.frame"))
-    stop("data must be a data.frame")
-  if ("grouped_df" %in% class(data))
+    stop("data must be a data.frame", call. = FALSE)
+
+  if (inherits(data, "grouped_df"))
     data <- dplyr::ungroup(data)
 
   # ---------------------------------------------
   # Tidy-eval capture of variables
   # ---------------------------------------------
-  # x
-  if (is.character(x)) {
-    x_sym <- rlang::sym(x)
-  } else {
-    x_sym <- rlang::ensym(x)
-  }
+  x_sym <- if (is.character(x)) rlang::sym(x) else rlang::ensym(x)
+  y_sym <- if (is.character(y)) rlang::sym(y) else rlang::ensym(y)
 
-  # y
-  if (is.character(y)) {
-    y_sym <- rlang::sym(y)
-  } else {
-    y_sym <- rlang::ensym(y)
-  }
-
-  # group (optional)
   if (!is.null(group)) {
-    if (is.character(group)) {
-      group_sym <- rlang::sym(group)
-    } else {
-      group_sym <- rlang::ensym(group)
-    }
+    group_sym <- if (is.character(group)) rlang::sym(group) else rlang::ensym(group)
   } else {
     group_sym <- NULL
   }
@@ -122,28 +107,41 @@ new_plot <- function(.data, x, y, group = NULL,
   y_col <- rlang::as_string(y_sym)
   group_col <- if (!is.null(group_sym)) rlang::as_string(group_sym) else NULL
 
-
   # ---------------------------------------------
   # Check column existence
   # ---------------------------------------------
-  if (!x_col %in% names(data)) stop(glue::glue("Column '{x_col}' not found in data."))
-  if (!y_col %in% names(data)) stop(glue::glue("Column '{y_col}' not found in data."))
+  if (!x_col %in% names(data))
+    stop(glue::glue("Column '{x_col}' not found in data."), call. = FALSE)
+
+  if (!y_col %in% names(data))
+    stop(glue::glue("Column '{y_col}' not found in data."), call. = FALSE)
+
   if (!is.null(group_col) && !group_col %in% names(data))
-    stop(glue::glue("Grouping column '{group_col}' not found in data."))
-
+    stop(glue::glue("Grouping column '{group_col}' not found in data."), call. = FALSE)
 
   # ---------------------------------------------
-  # Convert numeric grouping variable BEFORE plotting
+  # Validate plot type vs variable types
   # ---------------------------------------------
-  if (!is.null(group_col)) {
-    if (is.numeric(data[[group_col]])) {
-      data[[group_col]] <- factor(data[[group_col]], ordered = FALSE)
-    } else if (is.factor(data[[group_col]])) {
-      data[[group_col]] <- factor(data[[group_col]], ordered = FALSE)
+  type <- match.arg(type)
+
+  if (type %in% c("boxplot", "violin")) {
+    if (is.numeric(data[[x_col]]) && is.numeric(data[[y_col]])) {
+      stop(
+        paste0(
+          type, " plots require one categorical variable.\n",
+          "Please choose a grouping variable or select a different plot type."
+        ),
+        call. = FALSE
+      )
     }
   }
 
-
+  # ---------------------------------------------
+  # Convert numeric grouping variable → factor
+  # ---------------------------------------------
+  if (!is.null(group_col) && is.numeric(data[[group_col]])) {
+    data[[group_col]] <- factor(data[[group_col]], ordered = FALSE)
+  }
 
   # ---------------------------------------------
   # Determine number of groups
@@ -155,7 +153,6 @@ new_plot <- function(.data, x, y, group = NULL,
   } else {
     n_groups <- 1L
   }
-
 
   # ---------------------------------------------
   # Color palettes
@@ -178,7 +175,6 @@ new_plot <- function(.data, x, y, group = NULL,
     palette_colors <- viridisLite::viridis(n_groups)
   }
 
-
   # ---------------------------------------------
   # Themes
   # ---------------------------------------------
@@ -189,70 +185,85 @@ new_plot <- function(.data, x, y, group = NULL,
     classic = ggplot2::theme_classic(base_size = 14)
   )
 
-
   # ---------------------------------------------
   # Base aesthetics
   # ---------------------------------------------
   if (is.null(group_sym)) {
     p <- ggplot2::ggplot(data, ggplot2::aes(!!x_sym, !!y_sym))
   } else {
-    p <- ggplot2::ggplot(data, ggplot2::aes(!!x_sym, !!y_sym, color = !!group_sym, fill = !!group_sym))
+    p <- ggplot2::ggplot(
+      data,
+      ggplot2::aes(!!x_sym, !!y_sym, color = !!group_sym, fill = !!group_sym)
+    )
   }
-
 
   # ---------------------------------------------
   # Geometry selection
   # ---------------------------------------------
-  type <- match.arg(type)
-
   if (type == "point") {
     p <- p + ggplot2::geom_point(size = 3, alpha = 0.8)
-    if (!is.null(group_col)) p <- p + ggplot2::scale_color_manual(values = palette_colors)
+    if (!is.null(group_col))
+      p <- p + ggplot2::scale_color_manual(values = palette_colors)
 
   } else if (type == "line") {
     p <- p + ggplot2::geom_line(linewidth = 1.2, alpha = 0.8)
-    if (!is.null(group_col)) p <- p + ggplot2::scale_color_manual(values = palette_colors)
+    if (!is.null(group_col))
+      p <- p + ggplot2::scale_color_manual(values = palette_colors)
 
   } else if (type == "boxplot") {
     p <- p + ggplot2::geom_boxplot(alpha = 0.8, color = "black")
-    if (!is.null(group_col)) p <- p + ggplot2::scale_fill_manual(values = palette_colors)
-    else p <- p + ggplot2::scale_fill_manual(values = palette_colors[1])
+    if (!is.null(group_col))
+      p <- p + ggplot2::scale_fill_manual(values = palette_colors)
+    else
+      p <- p + ggplot2::scale_fill_manual(values = palette_colors[1])
 
   } else if (type == "violin") {
 
     if (!is.null(group_col)) {
-      p <- p + ggplot2::geom_violin(alpha = 0.8, scale = "width", trim = FALSE, color = "black") +
+      p <- p +
+        ggplot2::geom_violin(alpha = 0.8, scale = "width", trim = FALSE, color = "black") +
         ggplot2::scale_fill_manual(values = palette_colors)
 
     } else if (is.factor(data[[x_col]])) {
-      p <- p + ggplot2::geom_violin(
-        ggplot2::aes(fill = !!x_sym),
-        alpha = 0.8, scale = "width", trim = FALSE, color = "black"
-      ) +
+      p <- p +
+        ggplot2::geom_violin(
+          ggplot2::aes(fill = !!x_sym),
+          alpha = 0.8, scale = "width", trim = FALSE, color = "black"
+        ) +
         ggplot2::scale_fill_manual(values = palette_colors)
 
     } else {
-      p <- p + ggplot2::geom_violin(fill = palette_colors[1], alpha = 0.9,
-                                    scale = "width", trim = FALSE, color = "black")
+      p <- p +
+        ggplot2::geom_violin(
+          fill = palette_colors[1],
+          alpha = 0.9,
+          scale = "width",
+          trim = FALSE,
+          color = "black"
+        )
     }
   }
-
 
   # ---------------------------------------------
   # Labels + Theme
   # ---------------------------------------------
   title_text <- if (!is.null(title)) title else glue::glue("Plot of {y_col} by {x_col}")
 
-  p <- p + theme_choice +
+  p <- p +
+    theme_choice +
     ggplot2::labs(
       title = title_text,
       subtitle = subtitle,
       caption = caption,
       x = x_col,
-      y = y_col,
-      color = group_col,
-      fill = group_col
+      y = y_col
     )
+
+  # Only label legends when grouping is used
+  if (!is.null(group_col)) {
+    p <- p + ggplot2::labs(color = group_col, fill = group_col)
+  }
 
   return(p)
 }
+
