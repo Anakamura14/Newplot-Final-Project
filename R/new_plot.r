@@ -40,12 +40,13 @@
 #'
 #' @return A `ggplot` object.
 #'
-#' @examples
+#' @section Usage examples:
 #'
-#' ## Basic point plot
+#' \preformatted{
+#' # Basic point plot
 #' new_plot(mtcars, x = "cyl", y = "mpg", type = "point")
 #'
-#' ## Iris dataset with grouping
+#' # Grouped scatterplot
 #' iris |>
 #'   new_plot(
 #'     x = "Sepal.Length",
@@ -55,7 +56,7 @@
 #'     palette = "orange"
 #'   )
 #'
-#' ## Pipe-friendly workflow with a grouping variable
+#' # Pipe-friendly boxplot
 #' mtcars |>
 #'   dplyr::mutate(cyl = factor(cyl)) |>
 #'   new_plot(
@@ -65,7 +66,7 @@
 #'     type = "boxplot",
 #'     palette = "purple"
 #'   )
-#'
+#' }
 #'
 #' @export
 new_plot <- function(.data, x, y, group = NULL,
