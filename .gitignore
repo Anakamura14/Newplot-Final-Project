@@ -1,7 +1,19 @@
+# RStudio / R session files
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
-# inst/doc
-/doc/
+
+# Rendered documents
+*.html
+*.docx
+~$*.docx
+
+# Package build artifacts
+inst/doc/
+
+# pkgdown / site output
+docs/
+
+# R package metadata
 /Meta/
