@@ -5,14 +5,15 @@
 
 [![R-CMD-check](https://github.com/Anakamura14/Newplot-Final-Project/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Anakamura14/Newplot-Final-Project/actions/workflows/R-CMD-check.yaml)
 
-## Rendered Vignette (HTML)
+## Vignette
 
-Click below to view the fully rendered vignette online:
+The package vignette is provided as an R Markdown source file
+(`newplot_vignette.Rmd`) in the `vignettes/` directory. It documents the
+motivation, design decisions, and intended workflows supported by the
+`newplot` package.
 
-**<https://htmlpreview.github.io/?https://github.com/Anakamura14/Newplot-Final-Project/blob/main/inst/doc/newplot_vignette.html>**
-
-The vignette provides full documentation, usage examples, development
-notes, and future work.
+A rendered Word version of the vignette is included as part of the
+course submission for readability.
 
 ------------------------------------------------------------------------
 
@@ -68,34 +69,8 @@ Install the development version from GitHub:
 ``` r
 devtools::install_github("Anakamura14/Newplot-Final-Project")
 #> Using GitHub PAT from the git credential store.
-#> Downloading GitHub repo Anakamura14/Newplot-Final-Project@HEAD
-#> shiny (1.12.0 -> 1.12.1) [CRAN]
-#> Installing 1 packages: shiny
-#> Warning in download.file(urls, destfiles, "libcurl", mode = "wb", ...):
-#> downloaded length 0 != reported length 279
-#> Warning in download.file(urls, destfiles, "libcurl", mode = "wb", ...): cannot
-#> open URL
-#> 'https://cloud.r-project.org/bin/macosx/big-sur-arm64/contrib/4.5/shiny_1.12.0.tgz':
-#> HTTP status was '404 Not Found'
-#> Error in download.file(urls, destfiles, "libcurl", mode = "wb", ...) : 
-#>   cannot open URL 'https://cloud.r-project.org/bin/macosx/big-sur-arm64/contrib/4.5/shiny_1.12.0.tgz'
-#> Warning in download.packages(pkgs, destdir = tmpd, available = available, :
-#> download of package 'shiny' failed
-#> ── R CMD build ─────────────────────────────────────────────────────────────────
-#>      checking for file ‘/private/var/folders/k6/g3skgp_505g84whf915p_py80000gn/T/RtmpS6cbLN/remotes17e1f2c77879c/Anakamura14-Newplot-Final-Project-b28c25d/DESCRIPTION’ ...  ✔  checking for file ‘/private/var/folders/k6/g3skgp_505g84whf915p_py80000gn/T/RtmpS6cbLN/remotes17e1f2c77879c/Anakamura14-Newplot-Final-Project-b28c25d/DESCRIPTION’
-#>   ─  preparing ‘newplot’:
-#>      checking DESCRIPTION meta-information ...  ✔  checking DESCRIPTION meta-information
-#>   ─  checking for LF line-endings in source and make files and shell scripts
-#>   ─  checking for empty or unneeded directories
-#>      Omitted ‘LazyData’ from DESCRIPTION
-#>        NB: this package now depends on R (>= 4.1.0)
-#>        WARNING: Added dependency on R >= 4.1.0 because package code uses the
-#>      pipe |> or function shorthand \(...) syntax added in R 4.1.0.
-#>      File(s) using such syntax:
-#>        ‘new_plot.Rd’
-#>   ─  building ‘newplot_0.1.0.tar.gz’
-#>      
-#> 
+#> Skipping install of 'newplot' from a github remote, the SHA1 (7a688d00) has not changed since last install.
+#>   Use `force = TRUE` to force installation
 library(newplot)
 ```
 
@@ -146,23 +121,11 @@ The `new_plot_gadget()` function creates an interactive visualization
 builder:
 
 ``` r
+# Launch the interactive Shiny gadget (not run during knitting)
+if (interactive()) {
 new_plot_gadget(iris)
-#> Loading required package: shiny
-#> Warning: package 'shiny' was built under R version 4.5.2
-#> 
-#> Listening on http://127.0.0.1:6567
-#> $plot
+}
 ```
-
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
-
-    #> 
-    #> $code
-    #> new_plot(data,
-    #> x = "Sepal.Length",
-    #> y = "Sepal.Length",
-    #> type = "point",
-    #> theme_style = "minimal")
 
 The gadget allows users to:
 

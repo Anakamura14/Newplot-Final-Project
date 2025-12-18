@@ -17,13 +17,12 @@ knitr::opts_chunk$set(
 
 [![R-CMD-check](https://github.com/Anakamura14/Newplot-Final-Project/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Anakamura14/Newplot-Final-Project/actions/workflows/R-CMD-check.yaml)
 
-## Rendered Vignette (HTML)
+## Vignette
 
-Click below to view the fully rendered vignette online:
+The package vignette is provided as an R Markdown source file (`newplot_vignette.Rmd`) in the `vignettes/` directory. 
+It documents the motivation, design decisions, and intended workflows supported by the `newplot` package.
 
-**https://htmlpreview.github.io/?https://github.com/Anakamura14/Newplot-Final-Project/blob/main/inst/doc/newplot_vignette.html**
-
-The vignette provides full documentation, usage examples, development notes, and future work.
+A rendered Word version of the vignette is included as part of the course submission for readability. 
 
 ---
 
