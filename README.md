@@ -69,8 +69,22 @@ Install the development version from GitHub:
 ``` r
 devtools::install_github("Anakamura14/Newplot-Final-Project")
 #> Using GitHub PAT from the git credential store.
-#> Skipping install of 'newplot' from a github remote, the SHA1 (7a688d00) has not changed since last install.
-#>   Use `force = TRUE` to force installation
+#> Downloading GitHub repo Anakamura14/Newplot-Final-Project@HEAD
+#> ── R CMD build ─────────────────────────────────────────────────────────────────────────────
+#>      checking for file ‘/private/var/folders/k6/g3skgp_505g84whf915p_py80000gn/T/RtmpQWJUCf/remotes17c633f827e4e/Anakamura14-Newplot-Final-Project-6e26dc9/DESCRIPTION’ ...  ✔  checking for file ‘/private/var/folders/k6/g3skgp_505g84whf915p_py80000gn/T/RtmpQWJUCf/remotes17c633f827e4e/Anakamura14-Newplot-Final-Project-6e26dc9/DESCRIPTION’
+#>   ─  preparing ‘newplot’:
+#>    checking DESCRIPTION meta-information ...  ✔  checking DESCRIPTION meta-information
+#>   ─  checking for LF line-endings in source and make files and shell scripts
+#>   ─  checking for empty or unneeded directories
+#>    Omitted ‘LazyData’ from DESCRIPTION
+#>        NB: this package now depends on R (>= 4.1.0)
+#>        WARNING: Added dependency on R >= 4.1.0 because package code uses the
+#>      pipe |> or function shorthand \(...) syntax added in R 4.1.0.
+#>      File(s) using such syntax:
+#>        ‘new_plot.Rd’
+#> ─  building ‘newplot_0.1.0.tar.gz’
+#>      
+#> 
 library(newplot)
 ```
 

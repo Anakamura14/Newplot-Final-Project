@@ -103,8 +103,11 @@ reducing repetitive code while producing clear, consistent, publication-ready fi
 
 The `new_plot_gadget()` function creates an interactive visualization builder:
 
-```{r}
+```{r, eval = FALSE}
+# Launch the interactive Shiny gadget (not run during knitting)
+if (interactive()) {
 new_plot_gadget(iris)
+}
 ```
 
 The gadget allows users to:
