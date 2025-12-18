@@ -166,7 +166,7 @@ new_plot <- function(.data, x, y, group = NULL,
     red    = c("#8B2323", "#CD3333", "#EE3B3B", "#FF4040", "#FF6347", "#FA8072"),
     blue   = c("#00008B", "#0000CD", "#4169E1", "#1E90FF", "#00BFFF", "#87CEFA"),
     green  = c("#00441B", "#1B7837", "#5AAE61", "#A6DBA0", "#2FB8AC", "#B2E2E2"),
-    orange = c("#FF8C00", "#FFA500", "#FFB347", "#FF7F50", "#FF6347", "#FF4500"),
+    orange = c("#7F2704", "#A63603", "#E6550D", "#FD8D3C", "#FDBE85", "#FEE6CE"),
     pink   = c("#FF1493", "#FF69B4", "#FF82AB", "#FFB6C1", "#FFC0CB", "#FF69B4"),
     yellow = c("#FFD700", "#FFFF00", "#FFFACD", "#FAFAD2", "#FFEFD5", "#FFF8DC")
   )
