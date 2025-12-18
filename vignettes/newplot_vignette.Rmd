@@ -115,7 +115,9 @@ The package’s Shiny gadget expands its usability by providing a fully interact
 This design makes the gadget valuable for teaching and prototyping. Beginners can learn how different components influence the look of a plot, while more advanced users may appreciate the ability to experiment rapidly. When the user clicks “Done,” the gadget returns both the ggplot object and the exact new_plot() code that reproduces the figure. This reinforces reproducibility and supports integration into downstream scripts.
 
 To launch the gadget:
-```{r}
+```{r, eval = FALSE}
+# Launch the interactive Shiny gadget
+# (not run during knitting)
 library(newplot)
 
 # Launch the interactive gadget using iris
