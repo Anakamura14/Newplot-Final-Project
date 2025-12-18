@@ -20,15 +20,8 @@ ensuring compatibility with the function’s requirements. Users can select
 aesthetics, plot types, themes, palettes, and labels, preview the resulting plot,
 and export reproducible new_plot() code.
 }
-\examples{
-\dontrun{
-# Launch the interactive new_plot() gadget
-res <- new_plot_gadget(iris)
-
-# View the resulting plot
-res$plot
-
-# View the reproducible new_plot() code
-cat(res$code)
-}
+\details{
+This function launches an interactive Shiny gadget and is intended for
+interactive use. Because the gadget requires user interaction, no
+runnable examples are included. See the vignette for usage demonstrations.
 }
