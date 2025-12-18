@@ -19,7 +19,14 @@
 #'
 #' @examples
 #' \dontrun{
-#'   new_plot_gadget(iris)
+#' # Launch the interactive new_plot() gadget
+#' res <- new_plot_gadget(iris)
+#'
+#' # View the resulting plot
+#' res$plot
+#'
+#' # View the reproducible new_plot() code
+#' cat(res$code)
 #' }
 new_plot_gadget <- function(data) {
 
