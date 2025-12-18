@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 **Rendered HTML version:**  
 https://htmlpreview.github.io/?https://github.com/Anakamura14/Newplot-Final-Project/blob/main/inst/doc/newplot_vignette.html
 
-# Newplot
+# Newplot Introduction
 
 Newplot is an R package created to make the process of building publication-ready graphics more intuitive and accessible. While ggplot2 remains one of the most powerful and flexible visualization frameworks in R, many users—particularly beginners—struggle with the amount of repeated setup code required to produce polished figures. Tasks such as defining aesthetics, selecting themes, choosing palettes, and handling grouping can feel cumbersome, especially during exploratory work or when preparing multiple plots in a single workflow.
 
@@ -40,11 +40,11 @@ library(newplot)
 
 ## Motivation and Background
 
-The central motivation behind newplot comes from recognizing how frequently new or intermediate R users struggle with the structure of ggplot2 syntax. Even experienced users can find themselves repeatedly writing the same configuration code across projects. By simplifying the interface to ggplot2 and automating key steps—such as palette selection, theme application, and grouping detection—newplot allows users to focus more on interpreting their data rather than wrestling with syntax.
+The central motivation for newplot is rooted in the common challenges that new and intermediate R users face when navigating the structure and syntax of ggplot2. Even experienced users can find themselves repeatedly writing the same configuration code across projects. By simplifying the interface to ggplot2 and automating key steps—such as palette selection, theme application, and grouping detection—newplot allows users to focus more on interpreting their data rather than wrestling with syntax.
 
-This project also aimed to reduce the friction that beginners often face when learning about aesthetics, color scales, and tidy evaluation. While ggplot2 provides immense flexibility, it does require users to write additional code to achieve a consistent, refined look across plots. Newplot addresses this challenge by providing a stable, predictable foundation for visualization, making ggplot2 more approachable without sacrificing its flexibility.
+This project also sought to reduce the challenges beginners often encounter when learning core concepts such as aesthetics, color scales, and tidy evaluation. While ggplot2 provides immense flexibility, it does require users to write additional code to achieve a consistent, refined look across plots. Newplot addresses this challenge by providing a stable, predictable foundation for visualization, making ggplot2 more approachable without sacrificing its flexibility.
 
-In addition to functional improvements, the package emphasizes pedagogical value. The Shiny gadget makes visualization construction more interactive, offering a low-barrier entry point for students and analysts who prefer guided exploration. At the same time, the reproducible code output ensures that the learning process remains grounded in best practices.
+Alongside its functional improvements, the package is intentionally designed as a teaching tool. The Shiny gadget facilitates interactive visualization building, lowering barriers for students and analysts through guided exploration, while the reproducible code output reinforces best practices and transferable skills.
 
 ## Intended Users
 
@@ -58,7 +58,7 @@ Once the package is loaded, creating a plot requires only a few arguments. A sim
 new_plot(mtcars, x = "wt", y = "mpg", type = "point")
 ```
 
-Because the function requires variable names to be supplied as quoted strings, its behavior remains consistent across interactive sessions, scripted analyses, and R CMD check environments. The function integrates naturally with tidyverse pipelines as well:
+Requiring variable names to be supplied as quoted strings (e.g., "mpg") helps ensure that the function behaves consistently across different contexts, including interactive use, scripted analyses, and package checks. This approach also makes the function easy to use within tidyverse pipelines:
 
 ```{r}
 mtcars |>
@@ -100,7 +100,7 @@ new_plot(
   y = "mpg",
   group = "cyl",
   type = "boxplot",
-  palette = "purple"
+  palette = "blue"
 )
 ```
 
@@ -122,7 +122,9 @@ To launch the gadget:
 library(newplot)
 
 # Launch the interactive gadget using iris
-new_plot_gadget(iris)
+res <- new_plot_gadget(iris)
+res$plot
+res$code
 ```
 
 When run, the gadget opens in a dialog window. Users select x- and y-variables, optionally choose a grouping variable, specify a plot type, adjust labels, and preview the resulting graphic. Pressing “Done” returns both the constructed ggplot object and the exact R code that produced it, bridging the gap between graphical interaction and script-based analysis.
